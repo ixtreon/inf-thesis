@@ -4,6 +4,7 @@
 \documentclass[bsc,frontabs,twoside,singlespacing,parskip,deptreport]{infthesis}     % for BSc, BEng etc.
 % \documentclass[minf,frontabs,twoside,singlespacing,parskip,deptreport]{infthesis}  % for MInf
 
+
 \begin{document}
 
 \title{Implementing an online open-source prediction market framework}
@@ -53,15 +54,17 @@ You guys have been a great inspiration!
 
 \chapter{Introduction}
 
-	Information has been traded extensively in one way or another since the dawn of man. Intuitively this is true, but is even truer in recent years with advances such as the information economy and big data transforming the way we think about data and the knowledge it carries \cite{mcgee_managing_1993}; at the same time it has never been harder to quantify its value. 
-	
+Information has been traded extensively in one way or another since the dawn of man. Intuitively this is true, but is even truer in recent years with advances such as the information economy and big data transforming the way we think about data and the knowledge it carries \cite{mcgee_managing_1993}; at the same time it has never been harder to quantify its value. 
+
+
 The problem of efficiently combining information coming from different sources in order to form a rational belief is largely an unsolved issue in Bayesian philosophy \cite{greene_collective_2010}. It manifests in the domain of machine learning as the problem of belief aggregation which is the use of a number of existing machine learning algorithms in order to achieve better predictive performance. It is usually addressed using a number of diferent approaches. In practice though existing algorithms such as boosting, or expert products or mixtures are not as flexible as they introduce various constraints. and are rarely useful out-of-the-box. This in turn means that often result in complicated, task-specific solutions.
 
-	If we take a look at ordinary commodity trading though it is apparent that the existence of a market where agents can exchange goods using a common currency provides a meaningful way to determine the prices of the traded goods. The simplest form of such a market needs not be active with regard to the traded goods and is nothing more than the market squares that have existed in towns for ages. A more recent example are stock markets which nqkaksi agree on the price of stuff. By following the market's trading activity we could then track the prices at which trades occur for any of the goods in the market. 
+	If we take a look at ordinary commodity trading though it is apparent that the existence of a market where agents can exchange goods using a common currency provides a meaningful way to determine the prices of the traded goods. The simplest form of such a market needs not be active with regard to the traded goods and is nothing more than the market squares that have existed in towns for ages. A more recent example are stock markets which nqkaksi agree on the price of stuff. By following the market's trading activity we could then obtain a good idea of the value associated with each of the traded goods in the market. 
 
-	A prediction market is a special kind of a market which allows agents to trade on and share their information of a future event with the public. This is achieved by designing a market where the trading goods are akin to shares corresponding to each of the possible outcomes of the events of interest. Each share promises a fixed payment in the future to its holder if and only if the outcome associated with it happens to be the event's actual result. This future point is usually fixed at the start of a market (or a challenge), and is necessarily after the result of the event has become known to the public. When used in addition to a market maker that determines stuff prices it This setup incentivises players whose beliefs differ from those of the market to act on the difference in prices. For example if an agent thinks an outcome is more likely to occur
-
- believe an outcome is more likely to happen than the market's current valuation to act by purchasing shares at what they think is lower than its real price. By doing so they inform the market of their opinion and nudge the current market price 
+	A prediction market is a special kind of a market which allows agents to trade on and share their information of a future event with the public. This is achieved by designing a market where the trading goods are akin to shares corresponding to each of the possible outcomes of the events of interest. Each share promises a fixed payment in the future to its holder if and only if the outcome associated with it happens to be the event's actual result. This future point is usually fixed at the start of each challenge, and is necessarily after the result of the event has been observed by the public. Disregarding arbitrage opportunities we can then treat the goods' prices as a probability distribution over the outcome space. 
+	
+	
+	For example a binary event is either going to happen or not. If the price of purchasing one of each share is less than the reward promised by each of the shares there's an opportunity for making {\em risk-free} trades.  we   with regard to the trades we could then be This setup incentivises players whose beliefs differ from those of the market to act on the difference in prices. Consider a rational agent whose beliefs differ to the currently established market price. Such an agent is incentivised to trade on the observed difference. By doing so he informs the market of his position and helps establish an equlibrium price. 
 
 	My project deals with the implementation of a flexible online prediction market framework. In contrast to existing solutions  though it is mostly intended as a clean and extensible framework to be used as a base for further efforts. To this end the software offers a concise, well-tested and documented prediction market core with a modular architecture which allows for the creation and experimental comparsion of different pricing algorithms. Being an online platform it has a full-featured though fairly unsophisticated user interface, but also includes a comprehensive user-facing API which permits and actually encourages algorithmic trading. Additionally the market can host entirely automated competitions which can be used as an addition to supervised classifiers to improve predictive performance. 
 
@@ -144,7 +147,9 @@ to provide prediction markets for a number of topics ranging from sports to scie
 \chapter{Project Scope}
 	Here I outline the scope of the project in terms of the major milestones that I accomplished. 
 
-\section{Accomplished Goals / Milestones}	
+
+
+\section{Accomplished Goals and Milestones}	
 
 \subsection{Design a simple, expressive prediction market framework}
 	% talk about bduf, agile and finance software needs 2 be reliable
@@ -166,8 +171,11 @@ Market makers control the exchange of goods and their prices and are thus vital 
 	An important consequence of this feature will be the possibility to run prediction markets where players are encouraged to write their own machine learning algorithms in order to beat the problem at hand. While there are existing platforms that deal with the same problem of designing a machine learning classifiers using crowdsourcing (e.g. {\tt kaggle.com}), they do so in an inherently competitive (and thus non-collaborative) winner-takes-all model. In contrast prediction or machine learning markets allow the elicitation of beliefs based on the performance of {\em all} of the participating agents. 
 
 \section{Future Work}
+
 \subsection{Implement an intuitive and dynamic UI}
 	When I approached the project I had close to zero experience with any of HTML, JavaScript or CSS. This meant I had to start off more slowly and spend a sizeable amount of time getting the static structure of the interface done. Although I wished to additionally 
+
+\subsection{Event/Variable Composition}
 
 \chapter{Implementation}
 
@@ -183,6 +191,8 @@ With this in mind I explored the following choices of programming platforms:
 \item Python
 
 Python is a popular dynamic language supporting a number of programming paradigms. In addition to its comprehensive standard library there is a variety of available packages that cover a wide range of functionality notably in terms of web development. Django\footnote{https://www.Djangoproject.com/} is a popular full-stack framework which supports a number of database back-ends and emphasises modularity and readability. There are also a number of packages with a minimalistic approach such as Flask and Pyramid which allow for custom tailoring of much of the underlying processes. 
+
+On the other hand the dynamic nature of Python can quickly become a burden when dealing with bigger projects. Why?
 
 \item Java
 
@@ -214,15 +224,27 @@ The whole pricing and order handling logic comprising the market makers is writt
 
 \section{Market Structure}
 % talk about the specific design decisions when making the markets
-	In this section I talk of the internal structure of the markets in the final software. I introduce the main components of a prediction market from a programming viewpoint and the ways they interact with each other. I talk about some of the design decisions I was faced with while writing the code and the took while implementing the core market structure
+In this section I talk of the internal structure of the markets in the final software. I introduce the main components of a prediction market from a programming viewpoint and the ways they interact with each other. I talk about some of the design decisions I was faced with while writing the code and the took while implementing the core market structure
 
 \subsection{Models}
-	
+    Models are the main building block of Django's ORM approach. Written in Python much like normal classes they are used by the framework to recognise and automatically apply changes to the underlying database back-end. Models represent a fairly lightweight layer over traditional SQL constructs as their structure is necessarily flat and explicit relations such as keys and field multiplicity should be specified. Nonetheless it achieves its purpose of eliminating code duplication and database overhead in a fairly elegant, {\em pythonic} way. I found the advanced, if at times complex, tools for querying and updating the database were expressive enough for the purposes of the project. 
+
+    The purpose of a prediction market is to model the probability space defined over one or a number of related variables or events such as the performance of public companies or sports teams. 
+    
+    
+    At the core of the software stands the {\tt Market} model which is the basic representation of a prediction market. As part of its basic functionality every prediction market should keep track of the active players, process incoming orders in terms of the traded goods, and finally resolve shares (or goods) to rewards at the end of its lifetime. Since we are interested in modeling discrete, multinomial outcome spaces we associate each {\tt Market} with the variables or {\tt Events} specific to it. While in traditional prediction markets model we are often interested in modeling a specific instance of a problem, in machine learning markets we are necessarily modeling a {\em family} of events instead. Consider for example 
+    
+     their successful application in machine learning context necessarily involves the consideration of a {\em family} of events . 
+  
+
+\begin{figure}
+\includegraphics{markets_graph.png}
+\end{figure}
 
 \subsection{Admin Interface}
-	The admin interface is the place where market operators can create and configure the hosted markets and manage their contents in terms of variables (events) and data sets. 
+The admin interface is the place where market operators can create and configure the hosted markets and manage their contents in terms of variables (events) and data sets. 
 
-	Since the framework comes with the built-in {\tt django-admin} module serving this exact purpose, implementing the interface was not as terrifying as I had initially feared. Most common but often tediously repetitive operations - such as creating, editing or deleting objects - were surprisingly easy to implement thanks to the built-in capabilities of the module. On the other hand other, less conventional requirements such as the option to pre-fill a dataset with randomised entries or 
+	Since the framework comes with the built-in {\tt django-admin} module serving this exact purpose, implementing the interface was not as terrifying as I had initially feared. Most common but often tediously repetitive operations - such as creating, editing or deleting objects - were surprisingly easy to implement thanks to the built-in capabilities of the module. On the other hand other less ``popular" features, such as the option to pre-fill a dataset with randomised entries or 
 
 \subsection{API}
 	Implementing a remote API was one of the more important features of the project due to two reasons. 
@@ -231,25 +253,34 @@ The whole pricing and order handling logic comprising the market makers is writt
 	What follows is a brief overview of the pricing algorithms investigated in the scope of the project. As part of my design goals the existing market structure allows for the implementation of a number of different market pricing mechanisms. To 
 
 \subsection{Interface}
+	The two basic actions market makers should provide are processing orders and finalising challenges. 
 	
 \subsection{Order Book}
 	
 	The “city plaza” market scenario where potential buyers and sellers all place their bids and the matching buy/sell offers are resolved. There is normally more than one way to complete trades where for example an agent sells at a price lower than that of a matching buyer, or an agent wishes to buy a larger quantity than a seller has to offer. Usually the market maker is neutral towards both the goods and their prices, but can also be made active by e.g. resolving arbitrage opportunities in his favor.
 
 	Although they are simple to implement and operate, auctions of this type tend to create thin markets with volatile prices and low liquidity of the assets being traded. We can furthermore use the concept of Nash Equilibria to show that such markets do not incentivize players to share their true beliefs and are thus not well suited for model estimation (Myerson et al. 1983). Consider for example a buyer who values a given good well above its current market price: he or she would have no incentive whatsoever to let others (“the market”) know about their high valuation of the good but will instead seek to make trades at the lower price.
+	
 \subsection{Parimutuel Betting}
 This is the system usually used in gambling on sporting events, or in various lotteries. In it all bets of a type are put together in a pool, and the instantaneous odds are determined by the ratios between the already placed bets. The final winnings are determined by sharing the pool (minus any house cuts) amongst the winning bets. Although easy to implement and operate, such markets do not offer any guarantees on the amount to be won in case of success (i.e. the final odds) since the latter isn’t known until all bets are collected.
+
 \subsection{Market Scoring Rule}
 In a market scoring rule (MSR) prediction market agents report a probability estimate r on the outcomes of an event and are rewarded sci(r) when outcome i happens. Proper scoring rules are rules which reward estimates close to the truth the highest and penalise estimates that deviate from it, thus incentivizing players to act according to their true beliefs.
 
- Such scoring rules are typically monotonically increasing, an example being sci(r)=a+bilog(ri) which is the logarithmic market scoring rule (log-MSR; Hanson, 2002). It is a proper scoring rule which quantifies the risk (also known as self-information in information theory) for the market maker at any time and charges participants proportionally to the change in risk their positions incur: players who move the market prediction towards the “true” distribution (or winning outcomes) get rewarded for doing so, while those who degrade the market prediction are penalised.
+ [TODO: Review] Such scoring rules are typically monotonically increasing, an example being sci(r)=a+bilog(ri) which is the logarithmic market scoring rule (log-MSR; Hanson, 2002). It is a proper scoring rule which quantifies the risk (also known as self-information in information theory) for the market maker at any time and charges participants proportionally to the change in risk their positions incur: players who move the market prediction towards the “true” distribution (or winning outcomes) get rewarded for doing so, while those who degrade the market prediction are penalised.
 
-In general MSR market schemes are more involved than the previous two examples but also allow for greater flexibility in the pricing strategies. 
+In general MSR market schemes are more involved than other examples but also allow for greater flexibility in the pricing strategies. 
 
 \section{User Interface}
 % mention the static interface, js graphics !!
 
 	Due to my limited abilities in html and javascript the current user interface is fairly simple. Apart from basic features such as (secure) user registration and login it provides price quotes and transaction history for markets. There are a few directions I would like to expand on: for example by including histographs to visualise the prices or the trade volume in a market, by allowing browsing other agents’ portfolios, and making the interface more intuitive as a general. A great case study is presented in “A Combinatorial Prediction Market for the U.S. Elections” by Dudik et. al
+
+\section{Other Tools}
+
+\subsection{django-extensions}
+    This package is an MIT-licensed collection of extension tools which ease the process of developing Django apps. Two most useful features I used were the ability to automatically generate {\tt django-admin} templates and GraphViz {\tt dot} files of the models in a package. The latter especially helped me visualise [TODO: Also does what?]
+
 
 \section{Testing and Documentation}
 % documentation at github.io ?!
@@ -257,7 +288,7 @@ In general MSR market schemes are more involved than the previous two examples b
 % wiki too ?!?!?!?
 	When it comes to designing and testing an application dealing with any kind of transactions, it is clear that a set of minimum requirements has to be met in terms of consistency and transaction atomicity. Fortunately the high-level nature of the language and the framework make this straightforward. 
 
-	I initially wanted to adopt a test-driven approach towards units tests but doing so proved hard for the first few months of the project. Since it is straightforward to introduce runtime validation, or assertions, in Python I used that extensively from the start. 
+	I initially wanted to adopt a test-driven approach towards units tests but doing so proved hard for the first few months of the project. Since it is straightforward to introduce runtime validation or assertions in Python I used that extensively from the start. 
 \subsection{Unit Tests}
 	During that time I was mainly modeling the market structure and writing code for the front-end. Most of the work was thus of declarative nature and needed little, if any, tests as long as the design was OK. 
 
@@ -270,13 +301,15 @@ While I had trouble creating a comprehensive automated test suite though. I curr
     While designing the base models I paid extra attention to transaction atomicity: it would be quite inappropriate if funds appeared or vanished while serving requests in a market. Thankfully the framework makes implementing this easy and idiomatic enough so I had no problems accomplishing it using method decorators and with blocks.
 
 \subsection{Documentation}
-
+    As an important part of 
+    As an integral part of the development of a maintainable and useful software I decided I needed to have a documentation process which is flexible enough to both generate {\em AutoDoc}-style descriptions   
+    
 \subsection{Issues}
-
+    As I was using the 
 \chapter{Evaluation/Reflection}
-	In this chapter I will talk
 
 \chapter{Conclusion}
+	Prediction markets have already been studied for a while. Nonetheless there are 
 % its a stepping stone for creating advanced prediction markets. Hopefully not rough. 
 
 
