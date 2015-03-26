@@ -1,0 +1,39 @@
+\contentsline {chapter}{\numberline {1}Introduction}{7}
+\contentsline {chapter}{\numberline {2}Related Work}{9}
+\contentsline {section}{\numberline {2.1}Model Aggregation}{9}
+\contentsline {section}{\numberline {2.2}Machine Learning Markets}{9}
+\contentsline {section}{\numberline {2.3}Existing Software}{9}
+\contentsline {subsection}{\numberline {2.3.1}Open source}{9}
+\contentsline {subsection}{\numberline {2.3.2} Commercial }{10}
+\contentsline {chapter}{\numberline {3}Definitions}{13}
+\contentsline {section}{\numberline {3.1}Market}{13}
+\contentsline {section}{\numberline {3.2}Prediction Market}{13}
+\contentsline {section}{\numberline {3.3}Machine Learning Markets}{14}
+\contentsline {chapter}{\numberline {4}Project Scope}{15}
+\contentsline {section}{\numberline {4.1}Accomplished Goals / Milestones}{15}
+\contentsline {subsection}{\numberline {4.1.1}Design a simple, expressive prediction market framework}{15}
+\contentsline {subsection}{\numberline {4.1.2}Write a modular market maker model}{15}
+\contentsline {subsection}{\numberline {4.1.3}Write a simple yet sufficient user inteface}{15}
+\contentsline {subsection}{\numberline {4.1.4}Allow programmatic access}{16}
+\contentsline {section}{\numberline {4.2}Future Work}{16}
+\contentsline {subsection}{\numberline {4.2.1}Implement an intuitive and dynamic UI}{16}
+\contentsline {chapter}{\numberline {5}Implementation}{17}
+\contentsline {section}{\numberline {5.1}Design}{17}
+\contentsline {section}{\numberline {5.2}Market Structure}{19}
+\contentsline {subsection}{\numberline {5.2.1}Models}{19}
+\contentsline {subsection}{\numberline {5.2.2}Admin Interface}{19}
+\contentsline {subsection}{\numberline {5.2.3}API}{19}
+\contentsline {section}{\numberline {5.3}Market Makers}{20}
+\contentsline {subsection}{\numberline {5.3.1}Interface}{20}
+\contentsline {subsection}{\numberline {5.3.2}Order Book}{20}
+\contentsline {subsection}{\numberline {5.3.3}Parimutuel Betting}{20}
+\contentsline {subsection}{\numberline {5.3.4}Market Scoring Rule}{20}
+\contentsline {section}{\numberline {5.4}User Interface}{21}
+\contentsline {section}{\numberline {5.5}Testing and Documentation}{21}
+\contentsline {subsection}{\numberline {5.5.1}Unit Tests}{21}
+\contentsline {subsection}{\numberline {5.5.2}Runtime Tests}{22}
+\contentsline {subsection}{\numberline {5.5.3}Documentation}{22}
+\contentsline {subsection}{\numberline {5.5.4}Issues}{22}
+\contentsline {chapter}{\numberline {6}Evaluation/Reflection}{23}
+\contentsline {chapter}{\numberline {7}Conclusion}{25}
+\contentsline {chapter}{Bibliography}{27}
