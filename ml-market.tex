@@ -5,6 +5,7 @@
 % \documentclass[minf,frontabs,twoside,singlespacing,parskip,deptreport]{infthesis}  % for MInf
 
 
+\usepackage{graphicx}
 \begin{document}
 
 \title{Implementing an online open-source prediction market framework}
@@ -235,10 +236,12 @@ In this section I talk of the internal structure of the markets in the final sof
     At the core of the software stands the {\tt Market} model which is the basic representation of a prediction market. As part of its basic functionality every prediction market should keep track of the active players, process incoming orders in terms of the traded goods, and finally resolve shares (or goods) to rewards at the end of its lifetime. Since we are interested in modeling discrete, multinomial outcome spaces we associate each {\tt Market} with the variables or {\tt Events} specific to it. While in traditional prediction markets model we are often interested in modeling a specific instance of a problem, in machine learning markets we are necessarily modeling a {\em family} of events instead. Consider for example 
     
      their successful application in machine learning context necessarily involves the consideration of a {\em family} of events . 
-  
+
 
 \begin{figure}
-\includegraphics{markets_graph.png}
+\centerline{ \includegraphics[scale=0.7]{markets_graph.png} }
+\label{fig:class_diagram}
+\caption{Class diagram of the models comprising the market core. }
 \end{figure}
 
 \subsection{Admin Interface}
