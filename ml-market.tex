@@ -55,79 +55,77 @@ You guys have been a great inspiration!
 
 \chapter{Introduction}
 
-Information has been traded extensively in one way or another since the dawn of man. Intuitively this is true, but is even truer in recent years with advances such as the information economy and big data transforming the way we think about data and the knowledge it carries \cite{mcgee_managing_1993}; at the same time it has never been harder to quantify its value. 
+Information has been traded extensively in one way or another since the dawn of man. While true, this fact has become increasingly relevant in recent years with advances such as the information economy and big data transforming the way we think about data and the knowledge it implies \cite{mcgee_managing_1993}; at the same time it has never been harder to quantify its value. 
 
 
-The problem of efficiently combining information coming from different sources in order to form a rational belief is largely an unsolved issue in Bayesian philosophy \cite{greene_collective_2010}. It manifests in the domain of machine learning as the problem of belief aggregation which is the use of a number of existing machine learning algorithms in order to achieve better predictive performance. It is usually addressed using a number of diferent approaches. In practice though existing algorithms such as boosting, or expert products or mixtures are not as flexible as they introduce various constraints. and are rarely useful out-of-the-box. This in turn means that often result in complicated, task-specific solutions.
+The problem of efficiently combining information coming from different sources in order to form a rational belief is largely an unsolved issue in Bayesian philosophy \cite{greene_collective_2010}. It manifests in the domain of machine learning as the problem of belief aggregation which deals with the design of algorithms that combine the beliefs of multiple {\em weaker} learners in order to elicit a stronger, more accurate belief. In practice though existing solutions are 
 
-	If we take a look at ordinary commodity trading though it is apparent that the existence of a market where agents can exchange goods using a common currency provides a meaningful way to determine the prices of the traded goods. Note that while the traded goods can be physical, it is often the case that they are purely conceptual. For example the prices of stock market shares reflect the public's expectation of the performance of a company in the near future. The basic market needs not be active with regard to the traded goods and is in principle nothing more than the market squares that have existed in towns for ages. In its essence a market provides the basic process for determining the price, demand and ownership of various goods or services. 
+	If we take a look at ordinary commodity trading though it is apparent that the existence of a market where agents exchange goods using a common currency provides a meaningful way to determine the prices of the traded goods. Note that while the traded goods can be physical, it is often the case that they are purely conceptual. For example the prices of stock market shares reflect the public's expectation of the performance of a company in the near future. The basic market needs not be active with regard to the traded goods and is in principle nothing more than the market squares that have existed in towns for ages. In its essence a market provides the basic process for determining the price, demand and ownership of various goods or services. 
 
-	A prediction market is a special kind of a market which allows agents to trade on and share their information on a future event with the public. This is achieved by creating a market where the trading goods are akin to shares corresponding to each of the possible outcomes of the events of interest. Each share promises a fixed payment in the future to its holder if and only if the outcome associated with it happens to be the event's actual result. This future point is usually fixed at the start of each challenge, necessarily after the result of the event has been observed by the public. In such a way players are incentivised to trade on the difference between their beliefs and those of the market. For example rational agents will buy shares at what they believe is a lower than the {\em actual} price as this increases their expected profit. By doing so they affect the instantaneous price of these goods and thus inform the market and the public of their knowledge. The prices in prediction markets have in turn been previously establish an equlibrium price. 
-	
-	In practice there are many existing prediction markets where interested individuals can place bets on anything from sports to political events. [TODO: finiiish]
+	A prediction market is a special kind of a market which allows agents to trade on and share their information on a future event with the public. This is achieved by creating a market where the trading goods are akin to shares corresponding to each of the possible outcomes of the events of interest. Each share promises a fixed payment in the future to its holder if and only if the outcome associated with it happens to be the event's actual result. This future point is usually fixed at the start of each challenge, necessarily after the result of the event has been observed by the public. In such a way players are incentivised to trade on the difference between their beliefs and those of the market: rational agents would buy shares at what they perceive to be a lower price as this increases their expected profit. By doing so they practically inform the market and the public of their knowledge and help establish the equilibrium price. 
 
-	A more recent idea is the possible role of prediction markets in the creation of crowdsourced machine learning competitions. The main motivation behind such an approach is to leverage the public's knowledge at scale by offering incentives for the interested (and knowledgeable) parties. A prominent example is the {\em Netflix prize} challenge which was held as early as 2006 with the goal of building a movie taste classifier. There is also the {\em Kaggle} online platform which provides hosting of such challenges for interested data scientists and organisations. Although useful in practice such competitions do not 
-	
-	creation of a market where players are encouraged to build automated trading algorithms that predict and bet on the outcome of a (family of) events.  in a way turning it into a crowdsourced machine learning competition. Such an approach towards machine learning problems is not entirely new, prominent examples being the {\em Netflix prize} challenge which was held as early as 2006, and the {\em Kaggle} online platform which hosts such competitions. A major distinction is that while existing approaches operate in a {\em winner takess all} manner
+	Another possible application of prediction markets deals with the creation of crowdsourced machine learning competitions. Such challenges have become popular . The main motivation behind such approaches is to leverage the knowledge of the public at scale by offering incentives for the interested and knowledgeable parties. A prominent example is the {\em Netflix prize} challenge which was held with a recognised success as early as 2006 with the goal of improving the classification algorithms used by the company\cite{bennett_the_2007}. The online platform {\em Kaggle} takes a slightly different approach by instead hosting such competitions on the behalf of third parties. Although such approaches have proved fairly successful [cite?] exhibit a few shortcomings: most notably they are inherently anti-collaborative 
 
 	My project deals with the implementation of a flexible online prediction and machine learning market framework. In contrast to existing solutions  though it is mostly intended as a clean and extensible framework to be used as a base for further efforts. To this end the software offers a concise, well-tested and documented prediction market core with a modular architecture which allows for the creation and experimental comparsion of different pricing algorithms. Being an online platform it has a full-featured though fairly unsophisticated user interface, but also includes a comprehensive user-facing API which permits and actually encourages algorithmic trading. Additionally the market can host entirely automated competitions which can be used as an addition to supervised classifiers to improve predictive performance. 
 	While it does 
 
 \chapter{Related Work}
 
-	In this section I will go over the existing approaches to model aggregation, prediction markets, and how they connect to each other. I will then review some case studies of prediction markets at work. Finally I will have a look at the existing solutions that could be used as a base for my project. 
+	In this section I will go over the existing approaches to model aggregation, prediction markets, and how they relate to each other. I will then review some case studies of prediction markets at work. Finally I will have a look at the existing solutions that could be used as a base for my project. 
 
 \section{Model Aggregation}
-	In machine learning the problem of model or belief aggregation deals with the creation of meta-algorithms that use a set of existing supervised classifiers for a task in order to obtain better predicitve performance in comparison to any of the constituent algorithms alone. 
+	In machine learning the problem of model or belief aggregation deals with the design of meta-algorithms that use a number of existing classifiers for a specific task in order to elicit a more accurate prediction than any of the constituent algorithms. 
 
 \section{Machine Learning Markets}
-    Machine learning markets 
+    Machine learning markets are a fairly recent extension of the concept of prediction markets which establish significant parallels between the latter and existing machine learning approaches for model combination.  
 
 \section{Existing Software}
 % 
-	My search for software started first and foremost with  investigation of the open-source solutions which I could use as a starting point for my project. 
-	When looking at the existing software dealing with prediction markets of immediate interest are the open source platforms which could be used as a base of the project. I also looked 
+	My search for software started first and foremost with an investigation of the open-source solutions which could be used as a starting point for my project. I then had a look at a number of running prediction markets with active user-bases.  
 % briefly say we need (open source, extendable, easy to learn and use) framework
 % go thru zocalo, (drupal addon), 
 
 \subsection{Open source}
-	My search for open-source projects yielded the following results:
+    Despite the fact that prediction markets are relatively well-studied I was unable to find a satisfying project to base my project on. The solutions I found and examined were in general too limited in architecture, mostly outdated and built on top of aging or relatively uncommon tool stacks. 
 
 \begin{itemize}
+
 \item {\tt Zocalo}
 
-	Zocalo is an MIT-licensed prediction market written in Java using Java Server Pages (JSP) and Hibernate. It is probably the most prominent of the listed examples having been used in a number of research projects already [TODO: cite?]. It allows the creation of both {\em order book} and {\em market maker}-based markets of a single discrete variable. While it uses AJAX to implement updates in real-time the user interface is fairly simple as it is rendered (or stitched) on the fly using Java strings. This and the fact that the code-base is already large and tightly coupled means it may be difficult to extend or modify existing parts of the software. There is also no public market API and writing one in addition to supporting multinomial markets could prove hard due to the reasons listed above. 
+	Zocalo is an MIT-licensed prediction market written in Java using Java Server Pages (JSP) and Hibernate. It is probably the most prominent of the listed examples having been used in a number of research projects already [TODO: cite?]. It allows the creation of both {\em order book} and {\em market maker}-based markets of a single discrete variable. While it uses AJAX to implement updates in real-time the user interface is fairly simple as it is rendered (or stitched) on the fly using Java strings. This and the fact that the code-base is already large and tightly coupled means it may be difficult to extend or modify existing parts of the software. There is also no public market API and writing one in addition to supporting multinomial markets could prove hard due to the aforementioned reasons. 
 
 \item {\tt ideafutures } \footnote{http://ideafutures.sourceforge.net/}
-	{\tt Ideafutures} seems to be one of the first online prediction markets in existence dating as far back as 1995. It has been featured in a number of publications (cite). It only supports markets of single binary variables. 
 
-Although it is used by at least one operating market (the play money Foresight Exchange) development on the software seems to have stopped since 2005. It is additionally written in Perl and uses BerkeleyDB (as opposed to a traditional database) which makes it less of an ideal choice. 
+	{\tt Ideafutures} seems to be one of the first online prediction markets in existence dating as far back as 1995. It has been featured in a number of publications (cite). It only supports only markets of single binary variables and offers a fairly simplistic, textual interface. 
+
+Although it is used by at least one operating market (the play-money Foresight Exchange) development on the software seems to have stopped since 2005. It is additionally written in Perl and uses BerkeleyDB (as opposed to a traditional database) which makes it less of an ideal choice. 
 
 \item {\tt Open Prediction Markets} 
-	Drupal is a modular, open-source content management system written in PHP. {\tt Open Prediction Markets} is a Drupal module which implements prediction market functionality. 
+	Drupal is a modular, open-source content management system written in PHP and {\tt Open Prediction Markets} is a module which implements prediction market functionality on top of it. The only type of markets that is supported are {\em parimutuel} markets of single discrete variables. It's interface is similarly textual and does not seem to reflect changes in real-time. 
+	
+    	Although considerably more recent than the other examples in this list the {\tt Open Prediction Markets} module is nonetheless far from an ideal base for the project due to its limited functionality and choice of language. 
+	
 \end{itemize}
 
 % disuss why I didn't choose any of those. 
 
 \subsection{ Commercial }
-	Of note is also the presence of a number of (closed-source) commercial prediction market implementations that could be used as [a point of reference] in terms of features and flexibility. Due to futures markets being regulated in many parts of the world, most of the markets I looked at use alternative currencies such as Bitcoin. 
- dealing in bitcoin such as bitbet.us (implementing a parimutuel payout strategy), predictio.us (an order-book market), and fairlay.com (market maker-based). The last few examples also present different options for visualising the activity and structure of the markets such as price histograms, market depth graphs, and interactive UI.
+	Of note is also the presence of a number of commercial or simply closed-source prediction markets that could be used as a point of reference in terms of features and model flexibility. Due to futures markets being regulated in many parts of the world, most of the markets I looked at use alternative currencies such as Bitcoin. Interesting is the case of {\em Intrade}
 \begin{itemize}
 
 \item {\tt Betfair}
-
+    Betfair is one of the largest commercial prediction markets offering platforms for both s
 \item {\tt bitbet.us}
 	BitBet is a website where participants can use Bitcoin to play in parimutuel markets of binary outcomes. Thanks to the simple market mechanism its interface and betting process are fairly streamlined with intuitive visualisations and registration-free betting using Bitcoin and QR-codes. While it is not strictly a prediction market as it doesn't deal with securities it strikes mostly with its minimalistic and clean user experience. 
 
-\item {\tt Predictio.us}
-	Similarly to the previous example this website uses Bitcoin and supports only markets of binary variables. It is also a proper prediction market albeit entirely passive: there is no market maker and an order book is used instead. This limits the usability of the market 
+\item {\tt Predictious}
+	Similarly to the previous example this website uses Bitcoin and supports only markets of binary variables. It is also a proper prediction market albeit entirely passive: there is no market maker and an order book is instead used. 
 
-	It also has a more involved 
+	While simple in terms of market structure, the user interface of {\tt Predictious} is considerably more varied and includes price and activiy histograms, as well as views of the outstanding orders specific to a given market or a player. 
 
-to provide prediction markets for a number of topics ranging from sports to science. 
+
 \item {\tt Fairlay}	
-	
-% \item {\tt Inkling}	Although not a prediction market per se, {\tt Inkling} offers a prediction market infrastructure as a service to businesses and organizations. 
+
 
 \end{itemize}
 \chapter{Definitions}
