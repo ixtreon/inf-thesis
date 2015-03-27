@@ -71,6 +71,7 @@ The problem of efficiently combining information coming from different sources i
 	creation of a market where players are encouraged to build automated trading algorithms that predict and bet on the outcome of a (family of) events.  in a way turning it into a crowdsourced machine learning competition. Such an approach towards machine learning problems is not entirely new, prominent examples being the {\em Netflix prize} challenge which was held as early as 2006, and the {\em Kaggle} online platform which hosts such competitions. A major distinction is that while existing approaches operate in a {\em winner takess all} manner
 
 	My project deals with the implementation of a flexible online prediction and machine learning market framework. In contrast to existing solutions  though it is mostly intended as a clean and extensible framework to be used as a base for further efforts. To this end the software offers a concise, well-tested and documented prediction market core with a modular architecture which allows for the creation and experimental comparsion of different pricing algorithms. Being an online platform it has a full-featured though fairly unsophisticated user interface, but also includes a comprehensive user-facing API which permits and actually encourages algorithmic trading. Additionally the market can host entirely automated competitions which can be used as an addition to supervised classifiers to improve predictive performance. 
+	While it does 
 
 \chapter{Related Work}
 
@@ -95,7 +96,7 @@ The problem of efficiently combining information coming from different sources i
 \begin{itemize}
 \item {\tt Zocalo}
 
-	Zocalo is an MIT-licensed prediction market written in Java using Java Server Pages (JSP) and Hibernate. It is probably the most prominent of the listed examples having been used in a number of research projects already. It allows the creation of both {\em order book} and {\em market maker}-based markets of single discrete variables. Although it supports real-time updates via AJAX the user interface is fairly simple with the HTML being stitched on the fly using Java. This and the fact that the codebase is already large and tightly coupled means it may be difficult to extend or modify existing parts of the software. There is also no public market API and writing one in addition to supporting multinomial markets could prove hard due to the reasons listed above. 
+	Zocalo is an MIT-licensed prediction market written in Java using Java Server Pages (JSP) and Hibernate. It is probably the most prominent of the listed examples having been used in a number of research projects already [TODO: cite?]. It allows the creation of both {\em order book} and {\em market maker}-based markets of a single discrete variable. While it uses AJAX to implement updates in real-time the user interface is fairly simple as it is rendered (or stitched) on the fly using Java strings. This and the fact that the code-base is already large and tightly coupled means it may be difficult to extend or modify existing parts of the software. There is also no public market API and writing one in addition to supporting multinomial markets could prove hard due to the reasons listed above. 
 
 \item {\tt ideafutures } \footnote{http://ideafutures.sourceforge.net/}
 	{\tt Ideafutures} seems to be one of the first online prediction markets in existence dating as far back as 1995. It has been featured in a number of publications (cite). It only supports markets of single binary variables. 
@@ -230,13 +231,19 @@ While it is a popular choice for commercial software thanks to its wide platform
 The whole pricing and order handling logic comprising the market makers is written as modules controlled by the core ml-markets application. Each module provides price quotes, handles orders, and distributes winnings to players. This allows each market to specify the type of pricing engine to use but also helps for running markets under different scenarios which will come handy when evaluating their performance.  
 
 \section{Market Structure}
-% talk about the specific design decisions when making the markets
-In this section I talk of the internal structure of the markets in the final software. I introduce the main components of a prediction market from a programming viewpoint and the ways they interact with each other. I talk about some of the design decisions I was faced with while writing the code and the took while implementing the core market structure
+
+In this section I talk of the internal structure of the completed project. I introduce the main components of a prediction market from a programming perspective and the ways they interact with each other. I also talk in detail about the design decisions I took while writing the code. 
 
 \subsection{Models}
-    Models are the main building block of Django's ORM approach. Written in Python much like normal classes they are used by the framework to recognise and automatically apply changes to the underlying database back-end. Models represent a fairly lightweight layer over traditional SQL constructs as their structure is necessarily flat and explicit relations such as keys and field multiplicity should be specified. Nonetheless it achieves its purpose of eliminating code duplication and database overhead in a fairly elegant (or {\em pythonic}) way. I found the advanced, if at times complex, tools for querying and modifying the database state were expressive enough for all of my purposes.     
+    Models are the main building block of Django's ORM architecture. Written in Python as normal classes they are used by the framework to recognise and automatically apply changes to the underlying database back-end. Models represent a fairly lightweight layer over traditional SQL constructs, their structure being necessarily flat and specifying explicit relations such as keys and multiplicity. Nonetheless I found it achieves its purpose of eliminating code duplication and SQL overhead in a fairly elegant (or {\em pythonic}) way. Although its powerful, if at times involved, database query and update capabilities took me some time to fully grasp, I found they greatly simplified ``everyday" tasks dealing with the databse back-end. 
     
-    At the core of the software stands the {\tt Market} model which is the basic representation of a prediction market. As part of its basic responsibilities every {\tt Market} keeps a list of the registered players, processes incoming orders, and finally resolves shares to rewards at the end of a challenge. Since we are interested in modeling discrete, multinomial outcome spaces we associate each {\tt Market} with the variables or {\tt Events} specific to it. While in traditional prediction markets we are often interested in modeling a specific instance of a problem, in machine learning markets we are necessarily modeling a {\em family} of events instead. This is the same distinction as in running a market for {\em the current} Olympics  versus running a market . We are thus interested in creating a {\em family} of markets or rather in providing each market with a collection of 
+    At the core of the software stands the {\tt Market} model which is the basic representation of a prediction market. As part of its fundamental responsibilities every {\tt Market} keeps a list of the participating players, processes incoming orders, and ultimately resolves shares to rewards at the end of a challenge. Due to the relational 
+    
+    
+    As we are interested in modeling discrete, multinomial outcome spaces we associate each {\tt Market} with the variables or {\tt Events} specific to it. Each {\tt Event} in turn consists of a number of possible {\tt Outcome}s which 
+    While in traditional prediction markets we are often interested in modeling a specific instance of a problem, in machine learning markets we are necessarily modeling a {\em family} of events instead. This is the same distinction as in running a market for {\em the current} Olympics  versus running a market . We are thus interested in creating a {\em family} of markets or rather in providing each market with a collection of 
+    
+    Each {\tt Market} is also associated with the specific kind of a {\tt MarketMaker} that handles all incoming orders and is to finalise the market once a challenge ends. 
     
     Prediction markets model the probability space defined by one or more variables (or {\em events}) such as the performance of public companies or sports teams. 
     
@@ -252,13 +259,18 @@ In this section I talk of the internal structure of the markets in the final sof
 \subsection{Admin Interface}
     The admin interface is the place where market operator can create and configure the hosted markets and manage their contents (in terms of events and data sets) and state. 
 
-	Since the framework comes with the built-in {\tt django-admin} module serving this exact purpose, implementing this interface was not as tedious as I had initially expected. Thanks to the aforementioned module most common and repetitive operations - such as CRUD (create, read, update, delete) - were surprisingly easy to implement and tweak. On the other hand other less ``popular" features, such as the option to pre-fill a dataset with randomised entries or to create both an event and its associated outcomes in one go, required carefully reading through the (often quite large) documentation.   
+	Since the framework comes with the built-in {\tt django-admin} module serving this exact purpose, implementing this interface was particularly straightforward. Thanks to the aforementioned module the most common and repetitive operations on models (i.e. create, read, update, delete) were purposefully easy to implement and configure. On the other hand other less ``popular" features, such as the option to pre-fill a dataset with randomised entries or to create both an event and its associated outcomes in one go, required carefully reading through the (often quite large) documentation.   
 
 \subsection{API}
-	Implementing a remote API was one of the more important features of the project in light of its intended applications in machine learning. Such an API allows both the creation 
+    
+	Implementing a remote API was one of the more important features of the project in in terms of its intended use as a prediction market framework. Its basic premise is to allow for the development of automated agents that interact with existing markets. While in theory most if not all of its functionality mirrors that of the user interface, it is important that the API operates in a secure, well-defined fashion. 
+    
+    I first approached the problem by manually adding 
+    
 \section{Market Makers}
 % talk about the market makers that were or can be implemented. 
-	What follows is a brief overview of the pricing algorithms investigated in the scope of the project. As part of my design goals the existing market structure allows for the implementation of a number of different market pricing mechanisms. 
+    The following section 
+	What follows is an overview of the created market maker interface and the pricing algorithms investigated in the scope of the project. 
 
 \subsection{Interface}
 	The two basic actions market makers should provide are processing orders and finalising challenges. 
@@ -289,6 +301,8 @@ In general MSR market schemes are more involved than other examples but also all
 \subsection{django-extensions}
     This package is an MIT-licensed collection of extension tools which ease the process of developing Django apps. Two most useful features I used were the ability to automatically generate {\tt django-admin} templates and GraphViz {\tt dot} files of the models in a package. The latter especially helped me visualise [TODO: Also does what?]
 
+\subsection{Sphinx}
+    Sphinx is a flexible documentation generator which converts {\tt reStructuredText} (reST) files to a number of formats, most notably PDF and HTML. ReST is a flexible markup language widely used for documentation purposes in the Python community. I was not initially supportive of the idea of learning yet another markup or template language but after looking at possible alternatives Sphinx looked like the most reliable, widely used and {\em pythonic} solution out there. In the end I was able to both quickly generate automatic documentation from the code, and then manually extend and insert additional explanations and use cases for the examples in question. 
 
 \section{Testing and Documentation}
 % documentation at github.io ?!
@@ -296,25 +310,31 @@ In general MSR market schemes are more involved than other examples but also all
 % wiki too ?!?!?!?
 	When it comes to designing and testing an application dealing with any kind of transactions, it is clear that a set of minimum requirements has to be met in terms of consistency and transaction atomicity. Fortunately the high-level nature of the language and the framework make this straightforward. 
 
-	I initially wanted to adopt a test-driven approach towards units tests but doing so proved hard for the first few months of the project. Since it is straightforward to introduce runtime validation or assertions in Python I used that extensively from the start. 
-\subsection{Unit Tests}
-	During that time I was mainly modeling the market structure and writing code for the front-end. Most of the work was thus of declarative nature and needed little, if any, tests as long as the design was OK. 
+	I initially wanted to adopt a test-driven approach towards units tests but doing so proved hard for the first few months of the project. Since it is straightforward to introduce runtime validation or assertions in Python I used that extensively from the start. During that time I was mainly modeling the market structure and writing code for the front-end. Most of the work was thus of declarative nature and needed little, if any, tests. 
+	I followed a similar approach with documentation by providing extensive {\tt AutoDoc} comments inside the code for the most of the project. I found   
 
-	The testing process was not without its quirks related to the framework I used. After I completed the first few tests and proceeded to run them I noted they were all failing in a very specific way: although I could create objects in the test database and manipulate them referentially, accessing them using query selectors inevitably failed. 
-	While I was implementing the market makers I could find more test targets in terms of functionality. This allowed me to statically verify some of the assertions made 
-While I had trouble creating a comprehensive automated test suite though. I currently have a few simplistic tests (i.e. voting for A in a new market should increase the price for A) but I can’t find obvious targets to include in the suite.
+\subsection{Unit Tests}
+
+	The testing process was not without its quirks related to the framework I used. After I completed the first few tests and proceeded to run them I noted they were all failing in a very specific way: although I could create objects in the test database and manipulate them referentially, accessing them using query selectors inevitably failed. could find more test targets in terms of functionality. This allowed me to statically verify some of the assertions made 
+	
+	While I was implementing the market makers I 
+	
 \subsection{Runtime Tests}
-    There are a multitude of runtime tests achieving custom validation on top of Django’s existing model validation, but also hard assertions for model invariants. For example the joint asset prices for an outcome space always summing to 1 is enforced throughout the market makers, but there are also explicit checks executed every time prices change.
+    
+    The code features a multitude of runtime tests checking model invariants. For example the joint asset prices for an outcome space always summing to 1 is enforced throughout the market makers, but there are also explicit checks executed every time prices change.
 
     While designing the base models I paid extra attention to transaction atomicity: it would be quite inappropriate if funds appeared or vanished while serving requests in a market. Thankfully the framework makes implementing this easy and idiomatic enough so I had no problems accomplishing it using method decorators and with blocks.
 
 \subsection{Documentation}
-    As an important part of 
-    As an integral part of the development of a maintainable and useful software I decided I needed to have a documentation process which is flexible enough to both generate {\em AutoDoc}-style descriptions   
+
+    The documentation is an integral part of the lifecycle of any extensible and maintainable software and that is especially true in the case of a framework of any kind. For the most of my time working on the project I was relying on 
     
 \subsection{Issues}
     As I was using the 
+    
 \chapter{Evaluation/Reflection}
+
+\section{Functionality}
 
 \chapter{Conclusion}
 	Prediction markets have already been studied for a while. Nonetheless there are 
