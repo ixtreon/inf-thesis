@@ -64,27 +64,25 @@ The problem of efficiently combining information coming from different sources i
 
 	A prediction market is a special kind of a market which allows agents to trade on and share their information on a future event with the public. This is achieved by creating a market where the trading goods are akin to shares corresponding to each of the possible outcomes of the events of interest. Each share promises a fixed payment in the future to its holder if and only if the outcome associated with it happens to be the event's actual result. This future point is usually fixed at the start of each challenge, necessarily after the result of the event has been observed by the public. In such a way players are incentivised to trade on the difference between their beliefs and those of the market: rational agents would buy shares at what they perceive to be a lower price as this increases their expected profit. By doing so they practically inform the market and the public of their knowledge and help establish the equilibrium price. 
 
-	Another possible application of prediction markets deals with the creation of crowdsourced machine learning competitions. Such challenges have become popular . The main motivation behind such approaches is to leverage the knowledge of the public at scale by offering incentives for the interested and knowledgeable parties. A prominent example is the {\em Netflix prize} challenge which was held with a recognised success as early as 2006 with the goal of improving the classification algorithms used by the company\cite{bennett_the_2007}. The online platform {\em Kaggle} takes a slightly different approach by instead hosting such competitions on the behalf of third parties. Although such approaches have proved fairly successful [cite?] exhibit a few shortcomings: most notably they are inherently anti-collaborative 
+	Another possible application of prediction markets deals with the creation of crowdsourced machine learning competitions. Such challenges have become popular. The main motivation behind such approaches is to leverage the knowledge of the public at scale by offering incentives for the interested and knowledgeable parties. A prominent example is the {\em Netflix prize} challenge which was held with a recognised success as early as 2006 with the goal of improving the classification algorithms used by the company\cite{bennett_netflix_2007}. The online platform {\em Kaggle} takes a slightly different approach by instead hosting such competitions on the behalf of third parties. Although such approaches have proved fairly successful [cite?] exhibit a few shortcomings: most notably they are inherently anti-collaborative 
 
-	My project deals with the implementation of a flexible online prediction and machine learning market framework. In contrast to existing solutions  though it is mostly intended as a clean and extensible framework to be used as a base for further efforts. To this end the software offers a concise, well-tested and documented prediction market core with a modular architecture which allows for the creation and experimental comparsion of different pricing algorithms. Being an online platform it has a full-featured though fairly unsophisticated user interface, but also includes a comprehensive user-facing API which permits and actually encourages algorithmic trading. Additionally the market can host entirely automated competitions which can be used as an addition to supervised classifiers to improve predictive performance. 
-	While it does 
+	My project deals with the implementation of a flexible online prediction and machine learning market framework. In contrast to existing solutions  it is mostly intended as a clean and extensible platform to be used as a base for further efforts. To this end the software offers a concise, well-tested and documented prediction market core with a modular architecture which allows for the creation and experimental comparison of different pricing algorithms. Being a web platform it has a full-featured though fairly unsophisticated user interface, but also includes a comprehensive user-facing API which permits and actually encourages algorithmic trading. 
+	
 
 \chapter{Related Work}
 
 	In this section I will go over the existing approaches to model aggregation, prediction markets, and how they relate to each other. I will then review some case studies of prediction markets at work. Finally I will have a look at the existing solutions that could be used as a base for my project. 
 
 \section{Model Aggregation}
-	In machine learning the problem of model or belief aggregation deals with the design of meta-algorithms that use a number of existing classifiers for a specific task in order to elicit a more accurate prediction than any of the constituent algorithms. 
+	In machine learning the problem of model or belief aggregation deals with the design of meta-algorithms that use a number of existing classifiers for a specific task in order to elicit a more accurate prediction than any of the constituent algorithms. Such algorithms are usually called {\em ensemble methods} [TODO]
 
 \section{Machine Learning Markets}
-    Machine learning markets are a fairly recent extension of the concept of prediction markets which establish significant parallels between the latter and existing machine learning approaches for model combination.  
+    Machine learning markets are a fairly recent extension of the concept of prediction markets which establish significant parallels between the latter and existing machine learning approaches for model combination.  [TODO]
 
 \section{Existing Software}
 % 
-	My search for software started first and foremost with an investigation of the open-source solutions which could be used as a starting point for my project. I then had a look at a number of running prediction markets with active user-bases.  
-% briefly say we need (open source, extendable, easy to learn and use) framework
-% go thru zocalo, (drupal addon), 
-
+	My search for software started first and foremost with an investigation of the open-source solutions which could be used as a starting point for my project. I then had a look at a number of closed-source or commercial prediction markets which I investigated simiilarly in terms of UI and functionality.   
+	
 \subsection{Open source}
     Despite the fact that prediction markets are relatively well-studied I was unable to find a satisfying project to base my project on. The solutions I found and examined were in general too limited in architecture, mostly outdated and built on top of aging or relatively uncommon tool stacks. 
 
@@ -101,9 +99,10 @@ The problem of efficiently combining information coming from different sources i
 Although it is used by at least one operating market (the play-money Foresight Exchange) development on the software seems to have stopped since 2005. It is additionally written in Perl and uses BerkeleyDB (as opposed to a traditional database) which makes it less of an ideal choice. 
 
 \item {\tt Open Prediction Markets} 
+
 	Drupal is a modular, open-source content management system written in PHP and {\tt Open Prediction Markets} is a module which implements prediction market functionality on top of it. The only type of markets that is supported are {\em parimutuel} markets of single discrete variables. It's interface is similarly textual and does not seem to reflect changes in real-time. 
 	
-    	Although considerably more recent than the other examples in this list the {\tt Open Prediction Markets} module is nonetheless far from an ideal base for the project due to its limited functionality and choice of language. 
+	Although considerably more recent than the other examples in this list the {\tt Open Prediction Markets} module is nonetheless far from an ideal base for the project due to its limited functionality and choice of language. 
 	
 \end{itemize}
 
@@ -111,10 +110,12 @@ Although it is used by at least one operating market (the play-money Foresight E
 
 \subsection{ Commercial }
 	Of note is also the presence of a number of commercial or simply closed-source prediction markets that could be used as a point of reference in terms of features and model flexibility. Due to futures markets being regulated in many parts of the world, most of the markets I looked at use alternative currencies such as Bitcoin. Interesting is the case of {\em Intrade}
+	
 \begin{itemize}
 
 \item {\tt Betfair}
-    Betfair is one of the largest commercial prediction markets offering platforms for both s
+    [TODO]
+    
 \item {\tt bitbet.us}
 	BitBet is a website where participants can use Bitcoin to play in parimutuel markets of binary outcomes. Thanks to the simple market mechanism its interface and betting process are fairly streamlined with intuitive visualisations and registration-free betting using Bitcoin and QR-codes. While it is not strictly a prediction market as it doesn't deal with securities it strikes mostly with its minimalistic and clean user experience. 
 
@@ -125,7 +126,7 @@ Although it is used by at least one operating market (the play-money Foresight E
 
 
 \item {\tt Fairlay}	
-
+    [TODO]
 
 \end{itemize}
 \chapter{Definitions}
@@ -135,18 +136,20 @@ Although it is used by at least one operating market (the play-money Foresight E
 \section{Market}
 	Markets provide a common ground for the exchange of goods between different agents. Basic markets are netural towards both the participants and the goods being traded and do not have the concept of currency which is seen as another good instead. Each of the agents has an associated {\em position} in each of the goods being traded in the market which is simply the amount of the good they currently possess. In general there is no restriction on the value of the agent's position and we will distinguish between {\em long positions} where the agent has a positive holding, and {\em short positions} where the agent has a negative amount of the good. 
 
-	A basic model of such a market is the {\em order book} which records and matches the bids and offers placed by participating agents. Note that there is an inherent degree of freedom when implementing the matching process: arbitrage opportunities must be dealt with care if the market is to be strictly neutral, and the same goes for partially completing orders (since rarely, if ever both the price and the quantity match). 
+	A basic model of such a market is the {\em order book} which records and matches the bids and offers placed by participating agents. Such a market is {\em neutral} with regard to the goods as it never owns any. Note that there is an inherent degree of freedom when implementing the matching process: arbitrage opportunities must be dealt with care if the market is to be strictly neutral, and the same goes for partially completing orders (since rarely, if ever both the price and the quantity will match). 
 
 \section{Prediction Market}
 	Prediction markets are a type of market with an agreed currency where each of the remaining goods is tied to exactly one of the possible outcomes of a future event. Each good promises a fixed reward (taken to be 1 credit for simplicity) in case the outcome associated with it happens to be the event's actual result, and zero otherwise. Goods can be additionally created by agents for sale, which is equivalent to the agent assuming a short position in the market. 
 	
-	[TODO: fix that!]
-	Consider for example a market of a single event with two possible outcomes (i.e. a {\em binary} event) where each share promises a payout of 1 credit if the outcome associated with it is the result of the event. Suppose additionally there are agents who sell ``yes" shares for 0.3 credits each and ``no" shares for 0.6 credits each. It is clear that in such a market an interested agent could then conduct {\em risk-free trades} by buying (or alternatively selling) one of each type of share. 
+	%[TODO: fix that!]
+	
+	%Consider for example a market of a single event with two possible outcomes (i.e. a {\em binary} event) where each share promises a payout of 1 credit if the outcome associated with it is the result of the event. Suppose additionally there are agents who sell ``yes" shares for 0.3 credits each and ``no" shares for 0.6 credits each. It is clear that in such a market an interested agent could then conduct {\em risk-free trades} by buying (or alternatively selling) one of each type of share. 
 
-	Prediction markets have been used in the past in health care (Polgreen et al. 2006), to aid decision-taking in large corporations (Cowgill et al., 2008), and to predict presidential elections (Dudik et al., 2012). Recently prediction markets such as intrade.com were also shown to provide more accurate results on the Scottish referendum as compared to traditional voter polls (Bell, 2014).
+	Prediction markets have been shown to outperform other traditional forms of prediction such as polls. They have been used with success in the past for health care (Polgreen et al. 2006), to aid decision-taking in large corporations (Cowgill et al., 2008), and to predict presidential elections (Dudik et al., 2012). Recently prediction markets such as intrade.com were also shown to provide more accurate results on the Scottish referendum as compared to traditional voter polls (Bell, 2014).
 
 \section{Machine Learning Markets}
-	Machine learning markets are a fairly recent extension of the idea of prediction markets where the participants are machine learning agents acting according to a given utility or betting function. As such the research in this area is limited
+	Machine learning markets are a fairly recent extension of the idea of prediction markets where the participants are machine learning agents acting according to a given utility or betting function. As such the research in this area is limited 
+	[TODO]
 
 \chapter{Project Scope}
 	Here I outline the scope of the project in terms of the major milestones that I accomplished. 
@@ -167,7 +170,8 @@ Market makers control the exchange of goods and their prices and are thus vital 
 
 \subsection{Write a simple, functional user inteface}
 	The user interface is arguably one of the more important aspects of the software when it comes to player engagement. While it should necessarily provide basic functionality in terms of market interactions, such as observing and participating in a market, [it should also be informative, non-misleading, real-time]. On the other hand I had little to no experience in writing web user interfaces when I started working on the project and while I had some specific goals in mind (see Future Work) I decided that writing a full-fledged user interface would take too much effort considering my limited experience. 
-	Nonetheless the created user interface provides all basic functionality expected of an online market platform: it provides market listings, registration and detailed views and forms for placing and canceling orders. These features are built on top of the user authentication module that is part of the default Django installation and provides the basic means for user registration and session management. Although it is static as it does not reflect changes in the market in real-time, adding support for real-time updates should be fairly straightforward. 
+	
+	The final user interface nonetheless provides all basic functionality expected of an online trading platform: it provides market listings, registration and detailed views and forms for placing and canceling orders. These features are built on top of the user authentication module that is part of the default Django installation and provides the basic means for user registration and session management. Although it is static as it does not reflect changes in the market in real-time, adding support for real-time updates should be fairly straightforward. 
 	
 
 \subsection{Allow programmatic access}
@@ -178,20 +182,21 @@ Market makers control the exchange of goods and their prices and are thus vital 
 \section{Future Work}
 
 \subsection{Implement an intuitive and dynamic market UI}
-	Although fully-functional there are a number of areas where the current user interface is lacking. 
+	Although complete in terms of functionality there are a number of areas where the current user interface is lacking. 
 	
-	The most apparent drawback of the website is the lack of dynamic updates of the observed markets. This can be especially confusing to users who are used to dynamic single-page applications. 
+	Its most noticeable drawback is the lack of real-time updates reflecting changes in the market state. While such a functionality could be implemented in a straightforward manner using AJAX or WebSockets my limited experience with JavaScript told me I should leave these features for the end.  
 	
-	Another drawback is the lack of visual and informative markers
+	Another present issue with the interface is the fact that it is overly textual and lacks informative visualisations. I initially had the idea of making simple, even static market and activity histograms but ended up scraping it after I struggled for a few days with json formatting and at least two different drawing frameworks. 
 
-\subsection{Event/Variable Composition}
+\subsection{Allow event composition and relation}
+
+    Even though the current architecture properly supports multinomial markets of discrete variables, it accomplishes this by treating all of the dimensions as independent from each other. While this is fine and may correspond to the truth in many practical examples, it is also a necessary step towards the creation of a flexible prediction market framework. 
+    
 
 \chapter{Implementation}
+	This chapter details the design decisions taken while building the project. I first talk briefly about the technologies I decided to use and why I started from scratch instead of extending an existing one. I then continue by examining existing software stacks in terms of how suitable the language and libraries are for the task at hand. Finally I outline the major architectural components of the completed project and the ways they interact with each other. 
 
 \section{Design}
-	This chapter details the design decisions taken while building the project. I first talk briefly about the technologies I decided to use and why I started from scratch. I 
-
-	This chapter outlines the major architectural decisions taken before and during the implementation of the project. I first talk briefly about the reasons for starting a new project instead of extending an existing one. I then continue by examining existing software stacks in terms of how suitable the language and libraries are for the task at hand. Finally I outline the major architectural components of the completed project and the ways they interact with each other. 
 
 	When approaching the project one of my main goals was to build a software which could be both used and extended easily. On the other hand the specific nature of the project - financial prediction markets - means that it should be easy to both understand and verify the correctness of the code. These two goals are inherently clashing: 
 With this in mind I explored the following choices of programming platforms:
@@ -275,15 +280,15 @@ In this section I talk of the internal structure of the completed project. I int
 	
 \subsection{Order Book}
 	
-	The “city plaza” market scenario where potential buyers and sellers all place their bids and the matching buy/sell offers are resolved. There is normally more than one way to complete trades where for example an agent sells at a price lower than that of a matching buyer, or an agent wishes to buy a larger quantity than a seller has to offer. Usually the market maker is neutral towards both the goods and their prices, but can also be made active by e.g. resolving arbitrage opportunities in his favor.
+	The “city plaza” market scenario where potential buyers and sellers all place their bids and the matching buy/sell offers are resolved. There is normally more than one way to complete trades where for example an agent sells at a price lower than that of a matching buyer, or an agent wishes to buy a larger quantity than a seller has to offer. Usually the market maker is neutral towards both the goods and their prices, but can also be made active by e.g. resolving arbitrage opportunities in his favour.
 
-	Although they are simple to implement and operate, auctions of this type tend to create thin markets with volatile prices and low liquidity of the assets being traded. We can furthermore use the concept of Nash Equilibria to show that such markets do not incentivize players to share their true beliefs and are thus not well suited for model estimation (Myerson et al. 1983). Consider for example a buyer who values a given good well above its current market price: he or she would have no incentive whatsoever to let others (“the market”) know about their high valuation of the good but will instead seek to make trades at the lower price.
+	Although they are simple to implement and operate, auctions of this type tend to create thin markets with volatile prices and low liquidity of the assets being traded. We can furthermore use the concept of Nash Equilibria to show that such markets do not incentivise players to share their true beliefs and are thus not well suited for model estimation (Myerson et al. 1983). Consider for example a buyer who values a given good well above its current market price: he or she would have no incentive whatsoever to let others (“the market”) know about their high valuation of the good but will instead seek to make trades at the lower price.
 	
 \subsection{Parimutuel Betting}
-This is the system usually used in gambling on sporting events, or in various lotteries. In it all bets of a type are put together in a pool, and the instantaneous odds are determined by the ratios between the already placed bets. The final winnings are determined by sharing the pool (minus any house cuts) amongst the winning bets. Although easy to implement and operate, such markets do not offer any guarantees on the amount to be won in case of success (i.e. the final odds) since the latter isn’t known until all bets are collected.
+This is the system usually used in gambling on sporting events, or in various lotteries. In it all bets of a type are put together in a pool, and the instantaneous odds are determined by the ratios between the already placed bets. The final winnings are determined by sharing the pool (minus any house cuts) amongst the winning bets. Although easy to implement and operate, such markets do not offer any guarantees on the amount to be won in case of success (i.e. the final odds) since the latter is not known until all bets are collected.
 
 \subsection{Market Scoring Rule}
-In a market scoring rule (MSR) prediction market agents report a probability estimate r on the outcomes of an event and are rewarded sci(r) when outcome i happens. Proper scoring rules are rules which reward estimates close to the truth the highest and penalise estimates that deviate from it, thus incentivizing players to act according to their true beliefs.
+In a market scoring rule (MSR) prediction market agents report a probability estimate r on the outcomes of an event and are rewarded sci(r) when outcome i happens. Proper scoring rules are rules which reward estimates close to the truth the highest and penalise estimates that deviate from it, thus incentivising players to act according to their true beliefs.
 
  [TODO: Review] Such scoring rules are typically monotonically increasing, an example being sci(r)=a+bilog(ri) which is the logarithmic market scoring rule (log-MSR; Hanson, 2002). It is a proper scoring rule which quantifies the risk (also known as self-information in information theory) for the market maker at any time and charges participants proportionally to the change in risk their positions incur: players who move the market prediction towards the “true” distribution (or winning outcomes) get rewarded for doing so, while those who degrade the market prediction are penalised.
 
@@ -292,7 +297,7 @@ In general MSR market schemes are more involved than other examples but also all
 \section{User Interface}
 % mention the static interface, js graphics !!
 
-	Due to my limited abilities in html and javascript the current user interface is fairly simple. Apart from basic features such as (secure) user registration and login it provides price quotes and transaction history for markets. There are a few directions I would like to expand on: for example by including histographs to visualise the prices or the trade volume in a market, by allowing browsing other agents’ portfolios, and making the interface more intuitive as a general. A great case study is presented in “A Combinatorial Prediction Market for the U.S. Elections” by Dudik et. al
+	Due to my limited abilities in html and javascript the current user interface is fairly simple. Apart from basic features such as (secure) user registration and login it provides price quotes and transaction history for markets. There are a few directions I would like to expand on: for example by including histograms to visualise the prices or the trade volume in a market, by allowing browsing other agents’ portfolios, and making the interface more intuitive as a general. A great case study is presented in “A Combinatorial Prediction Market for the U.S. Elections” by Dudik et. al
 
 \section{Other Tools}
 
@@ -308,7 +313,7 @@ In general MSR market schemes are more involved than other examples but also all
 % wiki too ?!?!?!?
 	When it comes to designing and testing an application dealing with any kind of transactions, it is clear that a set of minimum requirements has to be met in terms of consistency and transaction atomicity. Fortunately the high-level nature of the language and the framework make this straightforward. 
 
-	I initially wanted to adopt a test-driven approach towards units tests but doing so proved hard for the first few months of the project. Since it is straightforward to introduce runtime validation or assertions in Python I used that extensively from the start. During that time I was mainly modeling the market structure and writing code for the front-end. Most of the work was thus of declarative nature and needed little, if any, tests. 
+	I initially wanted to adopt a test-driven approach towards units tests but doing so proved hard for the first few months of the project. Since it is straightforward to introduce runtime validation or assertions in Python I used that extensively from the start. During that time I was mainly modelling the market structure and writing code for the front-end. Most of the work was thus of declarative nature and needed little, if any, tests. 
 	I followed a similar approach with documentation by providing extensive {\tt AutoDoc} comments inside the code for the most of the project. I found   
 
 \subsection{Unit Tests}
@@ -325,7 +330,7 @@ In general MSR market schemes are more involved than other examples but also all
 
 \subsection{Documentation}
 
-    The documentation is an integral part of the lifecycle of any extensible and maintainable software and that is especially true in the case of a framework of any kind. For the most of my time working on the project I was relying on 
+    The documentation is an integral part of the life-cycle of any extensible and maintainable software and that is especially true in the case of a framework of any kind. For the most of my time working on the project I was relying on 
     
 \subsection{Issues}
     As I was using the 
