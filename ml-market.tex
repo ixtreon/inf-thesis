@@ -92,11 +92,11 @@ The main motivation behind such approaches is to leverage the knowledge of the p
 
     A prediction market is a type of market with an agreed currency where each of the remaining goods is tied to exactly one of the possible outcomes of a future event. Each good promises a fixed reward (taken to be 1 credit for simplicity) in case the outcome associated with it happens to be the event's actual result, and zero otherwise. Goods can be additionally created by agents for sale, which is equivalent to the agent assuming a short position in the market.
     
-    Prediction markets have been shown to outperform other traditional forms of prediction such as polls. They have been used with success in the past for health care (Polgreen et al. 2006), to aid decision-taking in large corporations (Cowgill et al., 2008), and to predict presidential elections (Dudik et al., 2012). Recently prediction markets such as intrade.com were also shown to provide more accurate results on the Scottish referendum as compared to traditional voter polls (Bell, 2014).
+    Prediction markets have been shown to outperform other traditional forms of prediction such as polls. They have been used with success in the past for health care (Polgreen et al. 2006), to aid decision-taking in large corporations (Cowgill et al., 2008), and to predict presidential elections (Dudik et al., 2012). Recently prediction markets such as intrade.com were also shown to provide more accurate results on the Scottish referendum as compared to traditional voter polls \cite{bell_the_2014}.
 
 
 \section{Machine Learning Market}
-    Machine learning markets are a fairly recent extension of the concept of prediction markets which establish significant parallels between prediction markets and existing machine learning approaches for model combination.  [TODO: cite, reference]
+    Machine learning markets are a fairly recent extension of the concept of prediction markets which establish significant parallels between prediction markets and existing machine learning approaches for model combination. In a machine learning market the players are machine learning agents possessing individual utility functions and probabilistic beliefs. 
  
 \section{Market Maker}
     Wat?
@@ -252,15 +252,20 @@ In this section I talk of the internal structure of the completed project. I int
 \subsection{Models}
     Models are the main building blocks of Django's ORM architecture. Written in Python as normal classes, they are used by the framework to recognise and automatically apply changes to the underlying database back-end. Models represent a fairly lightweight layer over traditional SQL constructs, their structure being necessarily flat and specifying the explicit relations such as keys and multiplicity. Nonetheless, I found Django’s model achieves its purpose of eliminating code duplication and SQL overhead in a fairly elegant (or {\em pythonic}) way. Although its powerful, if at times involved, database query and update capabilities took me some time to fully grasp, I found they greatly simplified everyday tasks dealing with the database back-end [TODO: example]. 
     
-    At the core of the software stands the {\tt Market} model which is the basic representation of a prediction market. As part of its fundamental responsibilities each {\tt Market} keeps a list of the participating players, processes incoming orders, and ultimately resolves shares to rewards at the end of a challenge.    
-    From a design standpoint it does not define much of the underlying market structure by itself, but instead acts as a foreign key to other models. This is necessary as part of the particular ORM requirements, but mainly stems from the fact that we try to place as few constraints on the created markets as possible. For example while binary markets could specify their sole event with its two outcomes and their prices, multivariate markets need be flexible in any of those dimensions; similarly, while traditional prediction markets often consider a single instance of a specific problem, their application in machine learning suggests the existence of a class or a family of such problems organised in {\em data-sets}. 
+\subsubsection{Market}
     
-
-
+    At the core of the software stands the {\tt Market} model which is the basic representation of a prediction market. As part of its fundamental responsibilities each {\tt Market} keeps a list of the participating players, processes incoming orders, and ultimately resolves shares to rewards at the end of a challenge.    
+    
+    From a design standpoint it does not define much of the underlying market structure by itself, but instead acts as a foreign key to other models. This is necessary as part of the particular ORM requirements, but mainly stems from the fact that we try to place as few constraints on the created markets as possible. For example while a market of a single binary event could contain the event, its two outcomes and their prices, multivariate markets need be flexible in any of those dimensions. 
+    Similarly, while traditional prediction markets often consider a single instance of a specific problem, their application in machine learning suggests the existence of a whole family of problems. Intuitively we are not as interested in determining whether {\em a particular} picture contains a face unless we can generalise this to a number of {\em similar} images of a provided {\em data-set}. 
+    
+    
+    
+\subsubsection{Event}
+    As we are interested in modeling discrete, multivariate outcome spaces, we associate each {\tt Market} with the variables or {\tt Events} specific to it. Each {\tt Event} in turn defines the possible values or {\tt Outcome}s it can take. 
 
         Each {\tt Market} is also associated with the specific kind of a {\tt MarketMaker} that handles all incoming orders. The market maker will also finalise the market once a challenge ends.
     
-    As we are interested in modeling discrete, multivariate outcome spaces, we associate each {\tt Market} with the variables or {\tt Events} specific to it. Each {\tt Event} in turn consists of a number of possible {\tt Outcome}s linked to their respective shares. 
 
     While in traditional prediction markets we are often interested in modeling a specific instance of a problem, in machine learning markets we are necessarily modeling a {\em family} of events instead. This is the difference between running a market for this year’s Olympics, and running a market for any previous year (considering, of course, the public does not know the results of the Olympics). [TODO: explain better]
 
@@ -311,7 +316,9 @@ In general MSR market schemes are more involved than other examples but also all
 \section{User Interface}
 % mention the static interface, js graphics !!
 
-    Due to my limited abilities in html and javascript the current user interface is fairly simple. Apart from basic features such as (secure) user registration and login, it provides price quotes and transaction history for markets. There are a few directions I would like to expand on: for example by including histograms to visualise the prices or the trade volume in a market, by allowing browsing other agents’ portfolios, and making the interface more intuitive as a general. A great case study is presented in “A Combinatorial Prediction Market for the U.S. Elections” by Dudik et. al
+    As mentioned earlier, adding major features to the user interface was put on hold for the most of the project duration due to a number of concerns. Nonetheless I had a 
+    
+    There are a few directions I would like to expand on: for example by including histograms to visualise the prices or the trade volume in a market, by allowing browsing other agents’ portfolios, and making the interface more intuitive as a general. A great case study is presented in “A Combinatorial Prediction Market for the U.S. Elections” by Dudik et. al
 
 \section{Other Tools}
 
@@ -333,8 +340,6 @@ I approached the documentation in a similar manner to testing: while for most of
 
 \subsection{Unit Tests}
 
-
-
     The main body of unit tests deals with the core market structure and does verification of the basic mechanisms underlying the markets. Example tests include starting, stopping and resetting a dataset or checking if the ``Cron`` module properly dispatches signals whenever markets expire. 
     I took a similar approach when writing the tests for the implemented market maker modules. Currently there are tests only for the {\tt msr-maker} as the other available maker - the order book - is completely neutral. 
     
@@ -352,9 +357,12 @@ I approached the documentation in a similar manner to testing: while for most of
     [TODO]
     
 \chapter{Evaluation/Reflection}
-    [TODO]
 
 \section{Functionality}
+
+\section{Interface}
+
+\section{Machine Learning Contests}
 
 \chapter{Conclusion}
 % prediction markets and how they can be improved to do even better job
