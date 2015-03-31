@@ -222,7 +222,7 @@ With this in mind I explored the following choices of programming platforms:
 \begin{itemize}
 \item Python
 
-Python is a popular dynamic language supporting a number of programming paradigms. In addition to its comprehensive standard library there is a variety of available packages that cover a wide range of functionality notably in terms of web development. Django\footnote{https://www.Djangoproject.com/} is a popular full-stack framework which supports a number of database back-ends and emphasises modularity and readability. There are also a number of packages with a minimalistic approach such as Flask and Pyramid which allow for custom tailoring of much of the underlying processes.
+Python is a popular dynamic language supporting a number of programming paradigms. In addition to its comprehensive standard library there is a variety of available packages that cover a wide range of functionality notably in terms of web development. Django\footnote{https://www.djangoproject.com/} is a popular full-stack MVC framework which supports a number of database back-ends and emphasises modularity and readability. There are also a number of packages with a minimalistic approach such as Flask and Pyramid which allow for custom tailoring of much of the underlying processes.
 
 On the other hand the dynamic nature of Python can quickly become a burden when dealing with bigger projects. Why?
 
@@ -238,7 +238,7 @@ While it is a popular choice for commercial software thanks to its wide platform
 
 \end{itemize}
 
-    I finally decided to use Python mainly due to its ubiquitous use and the availability of packages, discussions and general presence on the Internet. The latter proved invaluable since whenever I stumbled upon a difficulty while writing the actual code, I would have no problem looking up discussions on similar or related problems. Although that is not necessarily a plus and may reflect a weakness in the language documentation or philosophy, I managed to overcome most, if not all, of the problems I was faced with.
+    I finally decided to use Python mainly due to its ubiquitous use and the availability of packages, discussions and general presence on the Internet. The latter proved invaluable since whenever I stumbled upon a difficulty while writing the actual code, I would have no problem looking up discussions on similar or related problems. Although that is not necessarily a plus and may reflect a weakness in the language documentation or philosophy, the fact that I managed to overcome most, if not all, of the problems I was faced with, should mean something [TODO]
 
     My biggest issue with the language was the fact that it is dynamic. While such languages make fast prototyping of software much more straightforward, they are quickly overshadowed by their static counterparts when it comes to dealing with bigger applications involving a fairly stable design and implementation. For example, even though I used the Visual Studio IDE which has a great syntax highlighter and code completion features, it would constantly lose the type information of variables due to intricacies inherent in the framework and the language. In the end I felt like I spent a lot of time manually verifying and ``type-checking'' my programs, and ultimately debugging them: a problem that would be irrelevant in the context of a static language.
     
@@ -251,11 +251,16 @@ In this section I talk of the internal structure of the completed project. I int
 
 \subsection{Models}
     Models are the main building blocks of Django's ORM architecture. Written in Python as normal classes, they are used by the framework to recognise and automatically apply changes to the underlying database back-end. Models represent a fairly lightweight layer over traditional SQL constructs, their structure being necessarily flat and specifying the explicit relations such as keys and multiplicity. Nonetheless, I found Django’s model achieves its purpose of eliminating code duplication and SQL overhead in a fairly elegant (or {\em pythonic}) way. Although its powerful, if at times involved, database query and update capabilities took me some time to fully grasp, I found they greatly simplified everyday tasks dealing with the database back-end [TODO: example]. 
-    
-    At the core of the software stands the {\tt Market} model which is the basic representation of a prediction market. As part of its fundamental responsibilities each {\tt Market} keeps a list of the participating players, processes incoming orders, and ultimately resolves shares to rewards at the end of a challenge.    
-    From a design standpoint it does not define much of the underlying market structure by itself, but instead acts as a foreign key to other models. This is necessary as part of the particular ORM requirements, but mainly stems from the fact that we try to place as few constraints on the created markets as possible. For example while binary markets could specify their sole event with its two outcomes and their prices, multivariate markets need be flexible in any of those dimensions; similarly, while traditional prediction markets often consider a single instance of a specific problem, their application in machine learning suggests the existence of a class or a family of such problems organised in {\em data-sets}. 
-    
 
+\subsubsection{Market}
+
+	At the core of the model structure stands the {\tt Market} which represents the basic concept of a prediction market. As part of its fundamental responsibilities each {\tt Market} keeps a list of the participating players, processes incoming orders, and ultimately resolves shares to rewards at the end of each challenge. 
+
+	Each {\tt Market} defines its basic {\em name} and {\em description} 
+
+	Note that due to the specifics of the ORM used by Django this class does not contain or define much of the underlying market structure by itself, but instead acts as a foreign key to other models. This stems mainly from the fact that we require that the created markets are unconstrained in a number of features. For example if we modeled binary markets alone, we could specify the details for their sole event and its two outcomes and their prices. Multivariate markets on the other hand need be flexible in any of those dimensions. Similarly, while traditional prediction markets often consider a single instance of a specific problem, their application in machine learning suggests the existence of a class or a family of such problems organised in {\em data-sets}. 
+	
+	This means that in turn {\tt Markets}, as well as most other models, additionally define a number of helper methods for accessing concrete member values conveniently from HTML templates or other code. For example, even though a {\tt Market} does not directly contain the active {\tt DataSet} or {\tt Datum}, it specifies methods which access fields of interest in them. In addition this makes it particularly easy to introduce post- and pre-conditions for such operations. These are introduced in detail in Section 5.6.2. 
 
 
         Each {\tt Market} is also associated with the specific kind of a {\tt MarketMaker} that handles all incoming orders. The market maker will also finalise the market once a challenge ends.
@@ -266,16 +271,17 @@ In this section I talk of the internal structure of the completed project. I int
 
 
 \begin{figure}
-\noindent\makebox[\textwidth]{ \includegraphics[scale=0.7]{markets_graph.png} }
-\label{fig:class_diagram}
+\noindent\makebox[\textwidth]{ \includegraphics[scale=0.7]{figures/markets_graph.png} }
+\label{fig:model_diagram}
 \caption{A class diagram of the models comprising the market core. }
 \end{figure}
 
 
 \subsection{Admin Interface}
+
     The admin interface is the place where market operator can create and configure the hosted markets and manage their contents (in terms of events and data sets) and state.
 
-    Since the framework comes with the built-in {\tt django-admin} module serving this exact purpose, implementing the admin interface was straightforward. Thanks to the aforementioned module, the most common and repetitive operations on models (i.e. create, read, update, delete) were purposefully easy to implement and configure. On the other hand, other less ``popular'' features, such as the option to pre-fill a dataset with randomised entries or to create both an event and its associated outcomes in one go, required carefully reading through the (often quite large) documentation.   
+    Since the framework comes with the built-in {\tt django-admin} module serving this exact purpose, implementing the admin interface was straightforward. Thanks to the aforementioned module, the most common and repetitive operations on models (i.e. create, read, update, delete or CRUD) were purposefully easy to implement and configure. On the other hand, other less ``popular'' features, such as the option to pre-fill a dataset with randomised entries or to create both an event and its associated outcomes in one go, required carefully reading through the (often quite large) documentation.   
 
 \subsection{API}
     
@@ -287,9 +293,21 @@ In this section I talk of the internal structure of the completed project. I int
 % talk about the market makers that were or can be implemented.
     What follows is an overview of the created market maker interface and the pricing algorithms investigated in the scope of the project.
 
-\subsection{Interface}
-    The two basic actions market makers should provide are processing orders and finalising challenges. Some but not all market makers can additionally provide price quotes. 
-    
+\subsection{User Interface}
+
+
+\begin{figure}
+\noindent\makebox[\textwidth]{ \includegraphics{figures/admin-index.png} }
+\label{fig:model_diagram}
+\caption{A class diagram of the models comprising the market core. }
+\noindent\makebox[\textwidth]{ \includegraphics{figures/admin-dataset-add.png} }
+\label{fig:model_diagram}
+\caption{A class diagram of the models comprising the market core. }
+\noindent\makebox[\textwidth]{ \includegraphics{figures/admin-dataset-actions.png} }
+\label{fig:model_diagram}
+\caption{A class diagram of the models comprising the market core. }
+\end{figure}
+
 \subsection{Order Book}
     
     The “city plaza” market scenario where potential buyers and sellers place their offers and the matching ones are resolved. There is normally more than one way to complete trades where for example an agent sells at a price lower than that of a matching buyer, or an agent wishes to buy a larger quantity than a seller has to offer. Usually the market maker is neutral towards both the goods and their prices, but can also be made active by e.g. resolving arbitrage opportunities in his favour.
@@ -311,7 +329,34 @@ In general MSR market schemes are more involved than other examples but also all
 \section{User Interface}
 % mention the static interface, js graphics !!
 
+	As Django follows the MVC architectural pattern, it defines three major component types that control the flow of information from and to the user: the models, views, and controllers. We already examined the models which comprise the back-end market structure in Section 5.3. In this section I look at the other two components which together shape and define the overall user experience. 
+
+	The basic premise of a prediction market suggests the existence of a number of general-purpose components, such as those dealing with authentication, user and administrative operations (i.e. CRUD), and protocol security in general. On the other hand there is much in the way information is presented on the screen, and the different visualisations that help a user grasp the current market position and dynamics. While the Django framework comes equipped with a number of modules that greatly simplify generic tasks such as the ones above, the problem of designing an {\em informative} and [TODO] market is one that [deserves a project on its own]. There are a number of studies examining the role of user interfaces for prediction markets ([TODO: cite]) but implementing a real-time [informative, visual interface for real would be way too time-consuming]. 
+
+
     Due to my limited abilities in html and javascript the current user interface is fairly simple. Apart from basic features such as (secure) user registration and login, it provides price quotes and transaction history for markets. There are a few directions I would like to expand on: for example by including histograms to visualise the prices or the trade volume in a market, by allowing browsing other agents’ portfolios, and making the interface more intuitive as a general. A great case study is presented in “A Combinatorial Prediction Market for the U.S. Elections” by Dudik et. al
+
+\subsubsection{Authentication}
+
+	Django comes with a flexible, built-in user authentication system. Its most notable features include user groups and permissions, basic registration and log-in forms, as well as different authentication schemes. While these features significantly reduced the amount of boilerplate I had to write, the last was of special interest to me as I have first-handedly found it is surprisingly easy to introduce security vulnerabilities, even when implementing relatively simple and well-known concepts. 
+
+	
+
+
+\subsubsection{Views}
+Talk about request format, types, 
+
+input verification: betting data, user handling; lack of challenge-id-check-when-bet
+
+\subsubsection{Forms}
+Talk about marketform, eventform, allmarketform
+
+\subsubsection{Templates}
+ Talk about how I implemented the HTML templates. 
+
+\subsubsection{Static}
+Talk about the static files: CSS, JavaScript
+	The static files include the style-sheets 
 
 \section{Other Tools}
 
