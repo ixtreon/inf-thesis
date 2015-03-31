@@ -6,6 +6,8 @@
 
 
 \usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
 \begin{document}
 
 \title{Implementing an online open-source prediction market framework}
@@ -302,18 +304,90 @@ In this section I talk of the internal structure of the completed project. I int
 
 \subsection{User Interface}
 
+\begin{figure}
+
+\begin{subfigure}{.5\textwidth}
+
+  \includegraphics[width=.95\linewidth]{figures/ui-user-login(c).png}
+  \caption{user login}
+  \label{fig:sub1}
+\end{subfigure}%
+\begin{subfigure}{.6\textwidth}
+
+  \includegraphics[width=1\linewidth]{figures/ui-index(1).png}
+  \caption{index}
+  \label{fig:sub2}
+\end{subfigure}
+\caption{User login and index}
+\label{fig:test}
+\end{figure}
 
 \begin{figure}
-\noindent\makebox[\textwidth]{ \includegraphics{figures/admin-index.png} }
-\label{fig:model_diagram}
-\caption{A class diagram of the models comprising the market core. }
-\noindent\makebox[\textwidth]{ \includegraphics{figures/admin-dataset-add.png} }
-\label{fig:model_diagram}
-\caption{A class diagram of the models comprising the market core. }
-\noindent\makebox[\textwidth]{ \includegraphics{figures/admin-dataset-actions.png} }
-\label{fig:model_diagram}
-\caption{A class diagram of the models comprising the market core. }
+
+\begin{subfigure}{.6\textwidth}
+
+  \includegraphics[width=1\linewidth]{figures/ui-market-list(c).png}
+  \caption{market list}
+  \label{fig:sub1}
+\end{subfigure}%
+\begin{subfigure}{.6\textwidth}
+\includegraphics[width=.9\linewidth]{figures/ui-market-index(c).png}
+  \caption{market index}
+  \label{fig:sub2}
+\end{subfigure}
+\caption{Market list and market index}
+\label{fig:test}
 \end{figure}
+
+
+\begin{figure}
+
+\begin{subfigure}{1\textwidth}
+
+  \includegraphics[width=1.1\linewidth]{figures/admin-index(c).png}
+  \caption{admin index}
+  \label{fig:sub1}
+\end{subfigure}%
+
+\begin{subfigure}{1\textwidth}
+
+  \includegraphics[width=1.1\linewidth]{figures/admin-dataset-actions(c).png}
+  \caption{dataset actions}
+  \label{fig:sub2}
+\end{subfigure}
+\caption{admin interface}
+\label{fig:test}
+\end{figure}
+
+\begin{figure}
+
+\begin{subfigure}{1\textwidth}
+
+  \includegraphics[width=1.1\linewidth]{figures/admin-dataset-add(c).png}
+  \caption{add dataset}
+  \label{fig:sub1}
+\end{subfigure}%
+
+\begin{subfigure}{1\textwidth}
+
+  \includegraphics[width=1.1\linewidth]{figures/admin-event-add(c).png}
+  \caption{add event}
+  \label{fig:sub2}
+\end{subfigure}
+
+\begin{subfigure}{1\textwidth}
+
+  \includegraphics[width=1.1\linewidth]{figures/admin-market-add(1).png}
+  \caption{add market}
+  \label{fig:sub3}
+\end{subfigure}
+
+\caption{market actions}
+\label{fig:test}
+\end{figure}
+
+
+
 
 \subsection{Order Book}
     
