@@ -71,7 +71,7 @@ The problem of efficiently combining information coming from different sources i
 
     Another possible application of prediction markets deals with the creation of crowdsourced machine learning competitions. Such challenges have become increasingly popular thanks in large to the fact that they leverage the expertise and knowledge of the public at scale. A prominent example is the {\em Netflix Prize} challenge which was held as early as 2006 with the goal of improving the movie classification algorithms used by the company of the same name \cite{bennett_netflix_2007}. The contest ended 3 years later with success, the winning algorithm achieving a significant improvement of over 10\% increase in the RMSE metric in comparison to the original solution \cite{koren_bellkor_2009}. The online platform {\em Kaggle} which appeared shortly afterwards takes a slightly different approach by instead hosting such crowdsourced machine learning competitions on the behalf of third parties. It has proved similarly successful, attracting an active community of data scientists from different domains and leading to improvements in the {\em state-of-the-art} algorithms used across a number of disciplines such as Biology \cite{bentzien_crowd_2013} and Physics \cite{harvey_observing_2014}. 
 
-    Although fairly successful, this competitive approach to crowdsourcing machine learning problems exhibit a number of notable shortcomings. Most notably such challenges are inherently anti-collaborative as they incentivise participating players to keep their solutions private, in order to compete for the first places. This is a direct consequence of the reward structure which promises incentives exclusively for the top teams (or even team), and thus leads to an equilibrium where [the entry bar is constantly raised and] new players are effectively discouraged from participating - even those who posses knowledge unique to the market. 
+    Although fairly successful, this competitive approach to crowdsourcing machine learning problems exhibit a number of notable shortcomings. Most notably such challenges are inherently anti-collaborative as they incentivise participating players to keep their solutions private, in order to compete for the first places. This is a direct consequence of the reward structure which promises incentives exclusively for the top teams (or even team), and thus leads to an equilibrium where the entry requirements are constantly increasing thus effectively discouraging new players from participating - even those who possess knowledge unique to the market. 
 
     My project deals with the implementation of a flexible online prediction and machine learning market framework. In contrast to existing solutions modelling simple prediction markets, the software I built is intended as a extensible base for the future use of such markets in the domain of machine learning. 
 
@@ -92,7 +92,7 @@ To this end the software offers a concise, well-tested and documented prediction
 
 \section{Market}
 
-    Markets provide a common ground for the exchange of goods between different agents. Basic markets are neutral towards both the participants and the goods being traded and do not have the concept of currency which is seen as another good instead. Each of the agents has an associated {\em position} in each of the goods being traded in the market which is simply the amount of the good they currently possess. In general, there is no restriction on the value of the agent's position and we will distinguish between {\em long positions} where the agent has a positive holding, and {\em short positions} where the agent has a negative amount of the good.
+    Markets provide a common ground for the exchange of goods between different agents. Basic markets are neutral towards both the participants and the goods being traded and do not have the concept of currency which is seen as another good instead. Each of the agents has an associated {\em position} in each of the goods being traded in the market. The value of an agent's {\em position} in a good represents the amount of the good they currently possess and in general, there is no restriction on the value of the agent's position. We will distinguish between {\em long positions} where the agent has a positive holding, and {\em short positions} where the agent has a negative amount of the good.
 
     A basic model of such a market is the {\em order book} which records and matches the bids and offers placed by participating agents. Such a market is {\em neutral} with regard to the goods as it never owns any. Note that there is an inherent degree of freedom when implementing the matching process: arbitrage opportunities must be dealt with care if the market is to be strictly neutral, and the same goes for partially completing orders (since rarely, if ever both the price and the quantity will match).
 
@@ -111,7 +111,7 @@ To this end the software offers a concise, well-tested and documented prediction
 
 In a machine learning market the players are machine learning agents possessing individual {\em utility} or {\em betting} functions in addition to defining their probabilistic beliefs. As in ordinary prediction markets the traded goods correspond to the possible outcomes of the events (or variables) of interest. An important constraint is the {\em no-arbitrage} assumption which dictates that the prices of the goods corresponding to the disjoint outcomes of an event must be well-defined and equal to the goods' payout of 1 credit. The goods' prices thus form a probability distribution over the outcome space. In practice this is achieved by the use of an {\em active} market maker that determines the current price of goods by resolving arbitrage opportunities or providing liquidity to the market. 
 
-	Barbu and Lay introduced the concept of an {\bf artifical prediction market} as early as 2010 \cite{barbu_supervised_2010} and later extended and published it formally two years later \cite{barbu_introduction_2012}. In artificial prediction markets agents act according to their beliefs and a specified {\em betting function}. An important result obtained by the authors for this kind of markets is that agents with fairly simple (e.g. linear or logarithmic) betting functions generalise existing algorithms such as random forests and logistic regression and often outperform them in practice. More importantly 
+	Barbu and Lay introduced the concept of an {\bf artifical prediction market} as early as 2010 \cite{barbu_supervised_2010}. The concept has been later extended and published formally in 2012 \cite{barbu_introduction_2012}. In artificial prediction markets agents act according to their beliefs and a specified {\em betting function}. An important result obtained by the authors for this kind of markets is that agents with fairly simple (e.g. linear or logarithmic) betting functions generalise existing algorithms such as random forests and logistic regression and often outperform them in practice. More importantly 
 
 	An important paper by Storkey \cite{storkey_machine_2011} introduces the concept of {\bf machine learning markets}. In contrast to the framework proposed by Barbu and Lay, agents in machine learning markets are defined by an {\em utility} function. In practice this means that agents' bets need not be strictly proportional to their current wealth. Furthermore, markets of discrete, multivariate and possibly joint outcome spaces are considered. In his paper Storkey establishes the theoretical equivalence between market dynamics observed in machine learning markets with agents of simple, fixed utility functions and existing machine learning approaches, such as mixture models (linear aggregation, product of experts) and message passing algorithms. 
 
@@ -126,13 +126,13 @@ In a machine learning market the players are machine learning agents possessing 
     My search for software started first and foremost with an investigation of the open-source solutions which could be used as a starting point for my project. I then had a look at a number of closed-source or commercial prediction markets which I investigated similarly in terms of UI and functionality.   
     
 \section{Open Source Projects}
-    Despite the fact that prediction markets are not a particularly novel concept and are relatively well-studied I was unable to find a satisfying project which I could use as a starting point for my project/ market?). The solutions I found and examined were in general too limited in architecture, mostly outdated and built on top of aging or relatively uncommon web stacks.
+    Despite the fact that prediction markets are not a particularly novel concept and are relatively well-studied I was unable to find a satisfying project which I could use as a starting point for my market. The solutions I found and examined were in general too limited in architecture, mostly outdated and built on top of aging or relatively uncommon web stacks.
 
 \begin{itemize}
 
 \item {\tt Zocalo}
 
-    Zocalo is an MIT-licensed prediction market written in Java using Java Server Pages (JSP) and Hibernate. It is probably the most prominent of the listed examples having been used in a number of research projects in Economics (\cite{carver_architecture_2008}, \cite{chang_simulating_2009}. It allows the creation of both {\em order book} and {\em market maker}-based markets of a single discrete variable. While it uses AJAX to implement updates in real-time, the user interface is fairly simple as it is rendered (or stitched) on the fly using Java strings. This and the fact that the code-base is already large and tightly coupled means it may be difficult to extend or modify existing parts of the software. There is also no public market API and writing one in addition to supporting multivariate markets could prove hard due to the aforementioned reasons.
+    Zocalo is an MIT-licensed prediction market written in Java using Java Server Pages (JSP) and Hibernate. It is probably the most prominent of the listed examples having been used in a number of research projects in Economics (\cite{carver_architecture_2008}, \cite{chang_simulating_2009}. It allows the creation of both {\em order book} and {\em market maker}-based markets of a single discrete variable. While it uses AJAX to implement updates in real-time, the user interface is fairly simple as it is rendered (or stitched) on the fly using Java strings. This and the fact that the code-base is already large and tightly coupled means it might be difficult to extend or modify existing parts of the software. There is also no public market API and writing one in addition to supporting multivariate markets could prove hard due to the aforementioned reasons.
 
 \item {\tt ideafutures } \footnote{http://ideafutures.sourceforge.net/}
 
@@ -163,7 +163,7 @@ Although it is used by at least one operating market (the play-money Foresight E
 
 \item {\tt Predictious}
 
-    Similarly to the previous example this website uses Bitcoin and supports only markets of binary variables. It is also a proper prediction market albeit entirely passive: there is no market maker and an order book is instead used.
+    Similarly to the previous example this website uses Bitcoin and supports only markets of binary variables. It is also a proper prediction market albeit entirely passive: there is no market maker and an order book is used instead.
 
     While simple in terms of market structure, the user interface of {\tt Predictious} is considerably more varied and includes price and activity histograms, as well as views of the outstanding orders specific to a given market or a player.
 
@@ -183,7 +183,7 @@ Although it is used by at least one operating market (the play-money Foresight E
 \subsection{Design a simple, expressive prediction market framework}
     % talk about bduf, agile and finance software needs 2 be reliable
 
-	My first and arguably most important goal was the preliminary formulation of the market design with regard to the stated project requirements, scope, and the time available to work on it. This included an initial research stage during the first few weeks of the project where I examined existing solutions and the feasibility of using them as a base for my project. 
+	My first and arguably most important goal was the preliminary formulation of the market design with regard to the stated project requirements, scope, and the time available to work on it. This included an initial research stage during the first few weeks of the project when I examined existing solutions and the feasibility of using them as a base for my project. 
     
 This involves modeling the market-player relations from the market maker’s view in a structured and sane fashion. [TODO: clarify]
 
@@ -191,9 +191,9 @@ Allow the placing of orders (bets) using a human-facing web interface and market
 
 \subsection{Develop a modular market maker architecture}
 
-Market makers regulate the exchange and thus the prices of all goods in the market. Consequently they are vital to the predictive performance of the resulting information market. A flexible prediction market framework should thus either implement a number of existing, well-studied, and possibly configurable market maker schemes, or allow the writing of new ones from scratch. 
+Market makers regulate the exchange and thus the prices of all goods in the market. Consequently market makers are vital to the predictive performance of the resulting information market. A flexible prediction market framework should thus either implement a number of existing, well-studied, and possibly configurable market maker schemes, or allow the writing of new ones from scratch. 
 
-In fact the completed project achieves both of those goals. This is done by specifying the generic protocol (i.e. interface, abstract class) which custom market makers must follow and by implementing and exposing the functionality common accross all such makers. In the context of prediction markets the only shared operation is the finalising of a challenge: this is always done by first rewarding (or penalising) the agents with an active position in the winning outcome, and then destroying all shares created for the market. 
+In fact the completed project achieves both of these goals. This is done by specifying the generic protocol (i.e. interface, abstract class) which custom market makers must follow and by implementing and exposing the functionality common accross all such makers. In the context of prediction markets the only shared operation is the finalising of a challenge: this is always done by first rewarding (or penalising) the agents with an active position in the winning outcome, and then destroying all shares created for the market. 
 
 Note that since Python does not provide explicit modifier keywords nothing stops a market maker from overriding the existing implementation of the {\tt end\_challenge} method with its own. This feature could be used for the creation of market makers which do not follow the ordinary prediction market rules. Such makers could, for example, treat each account's balance as the amount of {\it credits} invested in a particular good, rather than the amount of {\it shares} owned for it. This is in turn useful for the creation of alternative market makers, such as those for {\em parimutuel} or {\em double-auction} markets. 
 
@@ -202,21 +202,20 @@ Note that since Python does not provide explicit modifier keywords nothing stops
 
 	To demonstrate the capabilities of the created framework I decided to implement two prominent types of market makers: an {\em order book} and the {\em logarithmic market scoring rule}. 
 
-	The {\em order book} market maker is one of the simplest makers possible, in that it is entirely neutral with regard to the traded goods. 
-
+	The {\em order book} market maker is one of the simplest makers possible, in that it is entirely neutral with regard to the traded goods. [write more?]
 
 
 \subsection{Write a simple, functional user interface}
-    The user interface is arguably one of the most important aspects of the software when it comes to player engagement. While it should necessarily provide basic functionality in terms of market interactions, such as observing and participating in a market, [it should also be informative, non-misleading, and in real-time]. 
+    The user interface (UI) is arguably one of the most important aspects of the software when it comes to player engagement. While it should necessarily provide basic functionality in terms of market interactions, such as observing and participating in a market, the UI should also be informative, non-misleading, and in real-time. 
 On the other hand UI is one of the actually {\em lesser} goals in terms of project. I had little to no experience in writing web front-ends when I started working on the project although I had some specific ideas in mind (see Future Work). In the end I would leave the UI extensions or perks for the final stage of the project. 
     
-    The final user interface nonetheless provides the major functionality expected of an online trading platform: it provides market listings, registration and detailed views and forms for placing and canceling orders. These features are built on top of the user authentication module that is part of the default Django installation and provides the basic means for user registration and session management. Although it is static as it does not reflect market changes in real-time, adding support for real-time updates to the user interface should be fairly straightforward.
+    The final user interface nonetheless delivers the major functionality expected of an online trading platform: it provides market listings, registration and detailed views and forms for placing and canceling orders. These features are built on top of the user authentication module that is part of the default Django installation and provides the basic means for user registration and session management. Although it is static as it does not reflect market changes in real-time, adding support for real-time updates to the user interface should be fairly straightforward.
     
 
 \subsection{Allow programmatic access}
-    The ability to use an API in order to manage and interact with the prediction markets would allow the execution of experiments where some or all of the participants are automated. In light of recent studies (see Chapter 4) such a tool could be used to experimentally establish equivalences between particular market setups and machine learning techniques. As it can be also utilised by ordinary market players
+    The ability to use an API in order to manage and interact with the prediction markets would allow the execution of experiments where some or all of the participants are automated. In light of recent studies (see Chapter 4) [wrong reference?] such a tool could be used to experimentally establish equivalences between particular market setups and machine learning techniques. As it can be also utilised by ordinary market players [more]
 
-    An important consequence of the aforementioned  feature will be the possibility to run prediction markets where players are encouraged to write their own machine learning algorithms in order to beat the problem at hand. While there are existing platforms that deal with the same problem of designing a machine learning classifiers using crowdsourcing (e.g. {\tt kaggle.com}), they do so in an inherently competitive (and thus non-collaborative) winner-takes-all model. In contrast prediction or machine learning markets allow the elicitation of beliefs based on the performance of {\em all} of the participating agents.
+    An important consequence of the aforementioned  feature will be the possibility to run prediction markets where players are encouraged to write their own machine learning algorithms in order to beat the problem at hand. While there are existing platforms that deal with the problem of designing a machine learning classifiers using crowdsourcing (e.g. {\tt kaggle.com}), they do so in an inherently competitive (and thus non-collaborative) winner-takes-all model. In contrast prediction or machine learning markets allow the elicitation of beliefs based on the performance of {\em all} of the participating agents.
     
 
 \section{Future Work}
@@ -307,50 +306,16 @@ Therefore in terms of data {\tt Markets} need only define their {\em name}, {\em
 
     Similarly, while traditional prediction markets often consider a single instance of a specific problem, their application in machine learning suggests the existence of a whole family of problems. 
     
-    While in traditional prediction markets we are often interested in modeling a specific instance of a problem, in machine learning markets we are necessarily modeling a {\em family} of events instead. This is the difference between running a market for this year’s Olympics, and running a market for any previous year (considering, of course, the public does not know the results of the Olympics). [TODO: explain better]
     
 \subsection{Event}
+	Since the created markets model large (possibly joint) multivariate outcome spaces we associate each {\em Market} with the variables or {\bf Events} specific to it. 
 
-	As the created markets are to model large (possibly joint) multivariate outcome spaces, we associate each {\tt Market} with the variables or {\tt Events} specific to it. Furthermore, since the modelled events should take on discrete values, we in turn associate each {\tt Event} with the possible {\tt Outcomes} it can take on. 
+Each {\tt Event} in turn defines the possible values or {\tt Outcome}s it can take. 
 
-	This means that similarly to markets, events are pretty compact in terms of their fields; in fact each event defines only its {\em name}, {\em description}, and the {\em market instance} to which it is specific.
+    
 
-	In terms of functionality {\tt Events} provide a number of helper methods used throughout the project, such as the ability to pick a random outcome from their event space (used in the generation of synthetic data-sets) or to present their outcomes in the form of a dictionary. 
-	
-	Events also define a few methods which return json data consumed by JavaScript on the front-end. The most important of these is the {\tt json\_prices} function which is used in the {\it price estimation} algorithms on the user side. The other two such methods (namely {\tt price\_histogram} and {\tt activity\_histogram} provide up-to-date historical data on (respectively) the prices and the activity of a market at different time-scales. Although fully implemented and working, these two functions are not presently used anywhere in the software. 
+    While in traditional prediction markets we are often interested in modeling a specific instance of a problem, in machine learning markets we are necessarily modeling a {\em family} of events instead. This is the difference between running a market for this year’s Olympics, and running a market for any previous year (considering, of course, the public does not know the results of the Olympics). [TODO: explain better]
 
-\subsection{Outcome}
-
-	As established in the previous subsection {\tt Outcomes} represent the possible values that a variable (i.e. an {\tt Event}) can take on. Each {\tt Outcome} is thus characterised by its basic {\it name}, {\it description}, and the {\it event instance} of which it is part. 
-
-	In the context of a running market each type of share (and thus each {\tt Outcome}) needs to be additionally associated with a number of price indicators. These include the instantenous price (the price of the last successful offer) but also the current bid and ask offers. While some or all of these values can be non-existent or ill-defined depending on the state of the underlying market maker (for consider {\em order book} and {\em parimutuel betting} respectively) they should be still considered fundamental to the {\tt Outcome} model. Else, every time a user requested the value of a price indicator for one or more events, the market maker would need to recalculate it, and that makes for extremely poor scalability. 
-
-	{\tt Outcomes} define only two helper methods: the first one retrieves the {\tt MarketBalance} instance associated with the {\tt Outcome} while the second one defines the tooltip to be used for the front-end. 
-
-\subsection{DataSet}
-
-	The {\tt DataSet} model represents a collection of observations (also challenges, data) available in the context of a given market. In addition to being associated, via a foreign key relation, to a single {\it market instance}, a {\tt DataSet} also defines its fundamental {\it name} and {\it description} similarly to previous models. In addition to this, data-sets also specify their intended use (i.e. as a {\it training} or a {\it test} set) and a number of variables that establish and manage the state of the data-set, and thus the market.
-	
-	While intuitively the functionality dealing with the market state could be more conveniently implemented in the {\tt Market} model itself, I was reluctant to do so for two major reasons. The first one was my failure to define a nullable field of type {\tt Event} in the {\tt Market} model using the provided database constructs (note this is not the same as the foreign key or one-to-one relationships available in Django). The second was my hesitation to complicate the market design by introducing unnecessary relations between the different models. [TODO: 1 sent]
-
-	The three fields that completely fix the current state of a data-set are:
-\begin{itemize}
-
-\item {\tt DataSet.is\_active}
-
-	This field determines whether the data-set is the currently active set for its market. Note that only a maximum of one set can be active for any market at any time. This constraint is one of the few class invariants that can be conveniently checked using runtime tests. 
-
-\item {\tt DataSet.challenge\_start}
-
-	For active data-sets this field points to the {\tt DateTime} at which the data-set's current challenge was started. If a data-set is inactive the value of this field is undefined. 
-
-\item {\tt DataSet.reveal\_interval}
-
-	Specifies the total duration in days of each individual challenge, or alternatively the time between consecutive revelations. 
-
-\end{itemize}
-
-Using the various methods that use and wrap around those fields it is easy for [TODO]
 
 \begin{figure}
 \caption{A class diagram of the models comprising the market core. }
@@ -420,20 +385,14 @@ $$C(e)=b*log(\sum_{o \in \omega} {e^{pos(o)}})$$
 
 	Figure \ref{fig:admin-index} displays the index page of the administration zone, accessible through the {\tt /admin/} URL. Its final look is largely the same as the original template used with every Django distribution, except for the changed title. This is to say that although it offers full functionality and looks fairly elaborate, the admin interface does not include any functionality which exceeds the capabilities of the framework. 
 
-	As visible in Figure \ref{fig:admin-index}, the admin interface is structured in sections corresponding to the individual {\it models} accessible from it. Inside the code this is achieved by introducing special classes that derive from the base {\tt ModelAdmin} prototype and are linked to each of the said models. Each class in turn specifies the fields and operations that can be accessed, modified or listed by administrators, and allows the handling of particular events of interest related to the admin interface. As a Django convention all such objects must be declared in the {\tt admin.py} file within the {\tt markets} project. 
+	As visible in Figure \ref{fig:admin-index}, the admin interface is structured in sections corresponding to the individual {\it models} accessible from it. Within code this is achieved by introducing special classes that derive from the base {\tt AdminForm} prototype, and are linked to each of the said models. Each class in turn specifies the fields and operations that can be accessed or modified by administrators, and allows the handling of particular events of interest related to the admin interface. As a Django convention all such objects must be declared in the {\tt admin.py} file within the {\tt markets} project. 
 
-	The main functionality that the admin interface provides is the creation, modification and deletion (i.e. CRUD operations) of {\it markets}, {\it events} and {\it data-sets}. As can be seen in the market class diagram (Figure \ref{fig:class-diagram}) though, the last two of these models are in turn comprised of other objects, i.e. events with their possible {\it outcomes} and data-sets with the underlying {\it data} and the {\it results} of each datum. 
+	The main functionality that the admin interface provides is the creation, modification and deletion (i.e. CRUD operations) of {\it markets}, {\it events} and {\it data-sets}. As shown in Figure \ref{fig:class-diagram} though, the last two of these models are in turn comprised of other objects, i.e. events with their possible {\it outcomes} and data-sets with the underlying {\it data} and the {\it results} of each datum. 
 
-\subsection{Markets}
+\subsection{Market Admin}
 
-	As discussed in Section \ref{sub:market}, even though the {\it market} model is the central and arguably the most important model in the software, it is quite uncomplicated in terms of its fields and the methods it implements. As a consequence, the respective {\tt MarketAdmin} class needs only support simple CRUD operations manipulating the few fields it possesses; functionality that can be implemented in a few lines using the Django framework. Figure ??? shows the admin form displayed when adding a new market.  
-	
+	Even though the {\it market} model is arguably the central and most important model in the created software, it is quite uncomplicated in the functionality or the members it provides on its own (for a discussion see Section \ref{sub:market}).  
 
-\subsection{Events}
-
-\subsection{DataSets}
-
-\subsection{Other Models}
 
 \begin{figure}
 \caption{Dataset actions}
