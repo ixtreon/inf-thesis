@@ -92,16 +92,23 @@ The main motivation behind such approaches is to leverage the knowledge of the p
 
 \section{Prediction Market}
 
-    A prediction market is a type of market with an agreed currency where each of the remaining goods is tied to exactly one of the possible outcomes of a future event. Each good promises a fixed reward (taken to be 1 credit for simplicity) in case the outcome associated with it happens to be the event's actual result, and zero otherwise. Goods can be additionally created by agents for sale, which is equivalent to the agent assuming a short position in the market.
+    A prediction market is a type of market with an agreed currency where each of the remaining goods is tied to exactly one of the possible outcomes of a future event. Each good promises a fixed reward (taken to be 1 credit for simplicity) in case the outcome associated with it happens to be the event's actual result, and zero otherwise. Goods can be additionally created by agents for sale, which is equivalent to the agent assuming a short position in the market. 
     
-    Prediction markets have been shown to outperform other traditional forms of prediction such as polls. They have been used with success in the past for health care (Polgreen et al. 2006), to aid decision-taking in large corporations (Cowgill et al., 2008), and to predict presidential elections (Dudik et al., 2012). Recently prediction markets such as intrade.com were also shown to provide more accurate results on the Scottish referendum as compared to traditional voter polls \cite{bell_the_2014}.
+    Prediction markets have been shown to outperform other traditional forms of prediction such as polls. They have been used with success in the past for health care (Polgreen et al. 2006), to aid decision-taking in large corporations (Cowgill et al., 2008), and to predict presidential elections (Dudik et al., 2012). Recently prediction markets such as intrade.com were also shown to provide more accurate results on the Scottish referendum as compared to traditional voter polls \cite{bell_independence_2014}.
 
+\section{Market Maker}
+    [TODO]
 
 \section{Machine Learning Market}
-    Machine learning markets are a fairly recent extension of the concept of prediction markets which establish significant parallels between prediction markets and existing machine learning approaches for model combination. In a machine learning market the players are machine learning agents possessing individual utility functions and probabilistic beliefs. 
- 
-\section{Market Maker}
-    Wat?
+    {\bf Machine learning markets} (also {\bf artificial prediction markets}) are a fairly recent extension of the concept of prediction markets which establish parallels between prediction markets and machine learning approaches for model combination. 
+
+In a machine learning market the players are machine learning agents possessing individual {\em utility} or {\em betting} functions in addition to defining their probabilistic beliefs. As in ordinary prediction markets the traded goods correspond to the possible outcomes of the events (or variables) of interest. An important constraint is the {\em no-arbitrage} assumption which dictates that the prices of the goods corresponding to the disjoint outcomes of an event must be well-defined and equal to the goods' payout of 1 credit. The goods' prices thus form a probability distribution over the outcome space. In practice this is achieved by the use of an {\em active} market maker that determines the current price of goods by resolving arbitrage opportunities or providing liquidity to the market. 
+
+	Barbu and Lay introduced the concept of an {\bf artifical prediction market} as early as 2010 \cite{barbu_supervised_2010} and later extended and published it formally two years later \cite{barbu_introduction_2012}. In artificial prediction markets agents act according to their beliefs and a specified {\em betting function}. Of note is the observation that the belief functions considered under this framework require agents' bets to be strictly proportional to their total wealth, which needs not be the case for machine learning markets in general. An important result obtained by the authors is that artificial prediction markets of agents with fairly simple (e.g. linear or logarithmic) betting functions generalise existing algorithms such as random forests and logistic regression and often outperform them in practice. 
+
+	An important paper by Storkey \cite{storkey_machine_2011} introduces the concept of {\bf machine learning markets}. In contrast to the framework proposed by Barbu and Lay, agents in machine learning markets are defined a {\em utility} function. 
+
+	An important result obtained by Storkey establishes the theoretical equivalence between market dynamics observed in machine learning markets and existing machine learning approaches, notably message passing mechanisms. 
 
 \chapter{Related Work}
 
@@ -247,14 +254,13 @@ While it is a popular choice for commercial software thanks to its wide platform
     For a web framework I chose Django due to similar concerns: while there were some simpler alternatives in terms of both learning curve and capabilities I ultimately decided that the popularity and availability of software for Django make it a better choice. Amongst its more prominent built-in features are mature ORM capabilities, a flexible server-side HTML templating language, and administration UI generator. There is additionally a slew of third-party modules such as the {\tt django-graphviz} program which can generate a class diagram of the models in a solution.
 
 
-\section{Market Structure}
+\section{Model Structure}
 
 In this section I talk of the internal structure of the completed project. I introduce the main components of a prediction market from a programming perspective and the ways they interact with each other. I also talk in detail about the design decisions I took while writing the code.
 
-\subsection{Models}
     Models are the main building blocks of Django's ORM architecture. Written in Python as normal classes, they are used by the framework to recognise and automatically apply changes to the underlying database back-end. Models represent a fairly lightweight layer over traditional SQL constructs, their structure being necessarily flat and specifying the explicit relations such as keys and multiplicity. Nonetheless, I found Django’s model achieves its purpose of eliminating code duplication and SQL overhead in a fairly elegant (or {\em pythonic}) way. Although its powerful, if at times involved, database query and update capabilities took me some time to fully grasp, I found they greatly simplified everyday tasks dealing with the database back-end [TODO: example]. 
 
-\subsubsection{Market}
+\subsection{Market}
 
     At the core of the software stands the {\tt Market} model which is the basic representation of a prediction market. As part of its fundamental responsibilities each {\tt Market} keeps a list of the participating players, processes incoming orders, and ultimately resolves shares to rewards at the end of a challenge.  
 
@@ -271,7 +277,7 @@ In this section I talk of the internal structure of the completed project. I int
     Similarly, while traditional prediction markets often consider a single instance of a specific problem, their application in machine learning suggests the existence of a whole family of problems. Intuitively we are not as interested in determining whether {\em a particular} picture contains a face unless we can generalise this to a number of {\em similar} images of a provided {\em data-set}. 
     
     
-\subsubsection{Event}
+\subsection{Event}
     As we are interested in modeling discrete, multivariate outcome spaces, we associate each {\tt Market} with the variables or {\tt Events} specific to it. Each {\tt Event} in turn defines the possible values or {\tt Outcome}s it can take. 
 
     
@@ -284,61 +290,39 @@ In this section I talk of the internal structure of the completed project. I int
 \label{fig:model_diagram}
 \caption{A class diagram of the models comprising the market core. }
 \end{figure}
-
-
-\subsection{Admin Interface}
-
-    The admin interface is the place where market operator can create and configure the hosted markets and manage their contents (in terms of events and data sets) and state.
-
-    Since the framework comes with the built-in {\tt django-admin} module serving this exact purpose, implementing the admin interface was straightforward. Thanks to the aforementioned module, the most common and repetitive operations on models (i.e. create, read, update, delete or CRUD) were purposefully easy to implement and configure. On the other hand, other less ``popular'' features, such as the option to pre-fill a dataset with randomised entries or to create both an event and its associated outcomes in one go, required carefully reading through the (often quite large) documentation.   
-
-\subsection{API}
-    
-    Implementing a remote API was one of the more important features of the project in in terms of its intended use as a prediction market framework. Its basic premise is to allow for the development of automated agents that interact with existing markets. While in theory most, if not all, of its functionality mirrors that of the user interface, it is important that the API operates in a secure, well-defined fashion.
-    
-    I first approached the problem by trying to manually read and write the input in json. Understandably this did not go as expected, even though Django provides both a json serializer and supports simple request handling. 
     
 \section{Market Makers}
 % talk about the market makers that were or can be implemented.
     What follows is an overview of the created market maker interface and the pricing algorithms investigated in the scope of the project.
 
-\subsection{User Interface}
+\subsection{Interface}
+ The two basic actions market makers should provide are processing orders and finalising challenges.
 
-\begin{figure}
+Some but not all market makers can additionally provide price quotes. 
 
-\begin{subfigure}{.5\textwidth}
+\subsection{Order Book}
+    
+    The “city plaza” market scenario where potential buyers and sellers place their offers and the matching ones are resolved. There is normally more than one way to complete trades where for example an agent sells at a price lower than that of a matching buyer, or an agent wishes to buy a larger quantity than a seller has to offer. Usually the market maker is neutral towards both the goods and their prices, but can also be made active by e.g. resolving arbitrage opportunities in his favour.
 
-  \includegraphics[width=.95\linewidth]{figures/ui-user-login(c).png}
-  \caption{user login}
-  \label{fig:sub1}
-\end{subfigure}%
-\begin{subfigure}{.6\textwidth}
+    Although they are simple to implement and operate, auctions of this type tend to create thin markets with volatile prices and low liquidity of the assets being traded. We can furthermore use the concept of Nash Equilibria to show that such markets do not incentivise players to share their true beliefs and are thus not well suited for model estimation (Myerson et al. 1983). Consider for example a buyer who values a given good well above its current market price: he or she would have no incentive whatsoever to let others (“the market”) know about their high valuation of the good but will instead seek to make trades at the lower price.
+    
+\subsection{Parimutuel Betting}
+This is the system usually used in gambling on sporting events, or in various lotteries. In it all bets of a type are put together in a pool, and the instantaneous odds are determined by the ratios between the already placed bets. The final winnings are determined by sharing the pool (minus any house cuts) amongst the winning bets. Even though they are easy to implement and operate, such markets do not offer any guarantees on the amount that is won in case of success (i.e. the final odds) since the latter is not known until all bets are collected.
 
-  \includegraphics[width=1\linewidth]{figures/ui-index(1).png}
-  \caption{index}
-  \label{fig:sub2}
-\end{subfigure}
-\caption{User login and index}
-\label{fig:test}
-\end{figure}
+This is the only one of the three market makers which was not written in code. 
 
-\begin{figure}
+\subsection{Logarithmic Market Scoring Rule}
+In a market scoring rule (MSR) prediction market agents report a probability estimate r on the outcomes of an event and are rewarded sci(r) when outcome i happens. Proper scoring rules are rules which reward estimates close to the truth the highest and penalise estimates that deviate from it, thus incentivising players to act according to their true beliefs.
 
-\begin{subfigure}{.6\textwidth}
+ [TODO: Review] Such scoring rules are typically monotonically increasing, an example being the logarithmic market scoring rule (log-MSR) first proposed by Hanson in 2002 \cite{hanson_logarithmic_2002}. It is a proper (i.e. monotonically increasing) scoring rule which quantifies the risk (equivalently the self-information from information theory) assumed by the current stake, or position, of the market maker in this good. 
 
-  \includegraphics[width=1\linewidth]{figures/ui-market-list(c).png}
-  \caption{market list}
-  \label{fig:sub1}
-\end{subfigure}%
-\begin{subfigure}{.6\textwidth}
-\includegraphics[width=.9\linewidth]{figures/ui-market-index(c).png}
-  \caption{market index}
-  \label{fig:sub2}
-\end{subfigure}
-\caption{Market list and market index}
-\label{fig:test}
-\end{figure}
+	Suppose we take an event $e$ with an outcome space $\omega_e$. Suppose also that for each type of share (and thus outcome) $o$ the current position of the market maker is given by $pos(o)$. The cost function is then given by:
+$$C(e)=b*log(\sum_{o \in \omega} {e^{pos(o)}})$$
 
+	Participants are subsequently charged according to the change in risk their positions incur. In practice this means that players who move the market prediction towards the {\it true} distribution get rewarded for doing so, while those who degrade the market prediction are penalised.
+
+
+\section{Admin Interface}
 
 \begin{figure}
 
@@ -386,29 +370,51 @@ In this section I talk of the internal structure of the completed project. I int
 \label{fig:test}
 \end{figure}
 
+    The admin interface is the place where the market operator or owner can create and configure the hosted markets and manage their state and contents in terms of events and data sets.
 
-
-
-\subsection{Order Book}
-    
-    The “city plaza” market scenario where potential buyers and sellers place their offers and the matching ones are resolved. There is normally more than one way to complete trades where for example an agent sells at a price lower than that of a matching buyer, or an agent wishes to buy a larger quantity than a seller has to offer. Usually the market maker is neutral towards both the goods and their prices, but can also be made active by e.g. resolving arbitrage opportunities in his favour.
-
-    Although they are simple to implement and operate, auctions of this type tend to create thin markets with volatile prices and low liquidity of the assets being traded. We can furthermore use the concept of Nash Equilibria to show that such markets do not incentivise players to share their true beliefs and are thus not well suited for model estimation (Myerson et al. 1983). Consider for example a buyer who values a given good well above its current market price: he or she would have no incentive whatsoever to let others (“the market”) know about their high valuation of the good but will instead seek to make trades at the lower price.
-    
-\subsection{Parimutuel Betting}
-This is the system usually used in gambling on sporting events, or in various lotteries. In it all bets of a type are put together in a pool, and the instantaneous odds are determined by the ratios between the already placed bets. The final winnings are determined by sharing the pool (minus any house cuts) amongst the winning bets. Even though they are easy to implement and operate, such markets do not offer any guarantees on the amount that is won in case of success (i.e. the final odds) since the latter is not known until all bets are collected.
-
-This is the only one of the three market makers which was not written in code. 
-
-\subsection{Market Scoring Rule}
-In a market scoring rule (MSR) prediction market agents report a probability estimate r on the outcomes of an event and are rewarded sci(r) when outcome i happens. Proper scoring rules are rules which reward estimates close to the truth the highest and penalise estimates that deviate from it, thus incentivising players to act according to their true beliefs.
-
- [TODO: Review] Such scoring rules are typically monotonically increasing, an example being sci(r)=a+bilog(ri) which is a logarithmic market scoring rule (log-MSR; Hanson, 2002). It is a proper scoring rule which quantifies the risk (also known as self-information in information theory) for the market maker at any time and charges participants proportionally to the change in risk their positions incur: players who move the market prediction towards the “true” distribution (or winning outcomes) get rewarded for doing so, while those who degrade the market prediction are penalised.
-
-In general MSR market schemes are more involved than other examples but also allow for greater flexibility in the pricing strategies.
+    Since the framework comes with the built-in {\tt django-admin} module serving this exact purpose, implementing the admin interface was considerably straightforward. Thanks to it most of the common or repetitive operations involving models (e.g. create, read, update, delete or CRUD) were purposefully easy to implement and configure. On the other hand, other less ``popular'' features, such as the option to pre-fill a dataset with randomised entries or to create both an event and its associated outcomes in one go, required carefully reading through the (often quite large) documentation.   
 
 \section{User Interface}
 % mention the static interface, js graphics !!
+
+\begin{figure}
+
+\begin{subfigure}{.5\textwidth}
+
+  \includegraphics[width=.95\linewidth]{figures/ui-user-login(c).png}
+  \caption{user login}
+  \label{fig:sub1}
+\end{subfigure}%
+\begin{subfigure}{.6\textwidth}
+
+  \includegraphics[width=1\linewidth]{figures/ui-index(1).png}
+  \caption{index}
+  \label{fig:sub2}
+\end{subfigure}
+\caption{User login and index}
+\label{fig:test}
+\end{figure}
+
+\begin{figure}
+
+\begin{subfigure}{.6\textwidth}
+
+  \includegraphics[width=1\linewidth]{figures/ui-market-list(c).png}
+  \caption{market list}
+  \label{fig:sub1}
+\end{subfigure}%
+\begin{subfigure}{.6\textwidth}
+\includegraphics[width=.9\linewidth]{figures/ui-market-index(c).png}
+  \caption{market index}
+  \label{fig:ui_market_index}
+\end{subfigure}
+\caption{Market list and market index}
+\label{fig:test}
+\end{figure}
+
+
+
+
 
 	As Django follows the MVC architectural pattern, it defines three major component types that control the flow of information from and to the user: the models, views, and controllers. We already examined the models which comprise the back-end market structure in Section 5.3. In this section I look at the other two components which together shape and define the overall user experience. 
 
@@ -417,27 +423,41 @@ In general MSR market schemes are more involved than other examples but also all
 
     Due to my limited abilities in html and javascript the current user interface is fairly simple. Apart from basic features such as (secure) user registration and login, it provides price quotes and transaction history for markets. There are a few directions I would like to expand on: for example by including histograms to visualise the prices or the trade volume in a market, by allowing browsing other agents’ portfolios, and making the interface more intuitive as a general. A great case study is presented in “A Combinatorial Prediction Market for the U.S. Elections” by Dudik et. al
 
-\subsubsection{Authentication}
+\subsection{Authentication}
 
-	Django comes with a flexible, built-in user authentication system. Its most notable features include user groups and permissions, basic registration and log-in forms, as well as different authentication schemes. While these features significantly reduced the amount of boilerplate I had to write, the last was of special interest to me as I have first-handedly found it is surprisingly easy to introduce security vulnerabilities, even when implementing relatively simple and well-known concepts. 
+	Django comes with a flexible, built-in user authentication system. Its most notable features include the support of user groups and permissions, basic registration and log-in forms, as well as different authentication and password policies. While these features significantly reduced the amount of {\it boilerplate} code I had to write, the last of those was of special interest to me as I have (first-handedly) found it is surprisingly easy to introduce security vulnerabilities, even when implementing relatively simple and well-known concepts such as password encryption or salting. 
+
+
 
 	
 
 
-\subsubsection{Views}
+\subsection{Views}
+	The views 
 Talk about request format, types, 
 
 input verification: betting data, user handling; lack of challenge-id-check-when-bet
 
-\subsubsection{Forms}
-Talk about marketform, eventform, allmarketform
+\subsection{Forms}
+	The concept of {\bf Forms} in Django (also the ``C'' in its MVC architecture) derives directly from the concept of {\em HTML forms} used for implementing operations such as {\tt GET} or {\tt POST}. Written in Python, their purpose is to simplify many of the common operations related to HTML forms and the handling of user input in general, such as establishing connections to existing back-end models, performing validation, or preparing the fields of a model for rendering. 
 
-\subsubsection{Templates}
+
+\subsection{Templates}
  Talk about how I implemented the HTML templates. 
 
-\subsubsection{Static}
+\subsubsection{Static Files}
 Talk about the static files: CSS, JavaScript
-	The static files include the style-sheets 
+	The static files include the style-sheets used throughout the site and the various front-end JavaScript functions I wrote as part of the user interface. 
+
+	Due to a number of concerns I adopted the common practice of separating the structure of the user-facing code from its design using separate style-sheets. This was done in order to emphasize the flexibility of the interface, but also to allow the use of the same style-sheets across different pages. 
+
+	
+
+\section{API}
+    
+    Implementing a remote API was one of the more important features of the project in in terms of its intended use as a prediction market framework. Its basic premise is to allow for the development of automated agents that interact with existing markets. While in theory most, if not all, of its functionality mirrors that of the user interface, it is important that the API operates in a secure, well-defined fashion.
+    
+    I first approached the problem by trying to manually write the handlers for API requests. This did not go as planned as I had not considered that most, if not all, of its functionality is the same as the functionality offered by the underlying models and views 
 
 \section{Other Tools}
 
