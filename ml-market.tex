@@ -370,6 +370,7 @@ In this section I talk of the internal structure of the completed project. I int
 
 	Specifies the total duration of each individual challenge, in days. 
 
+\end{itemize}
     While in traditional prediction markets we are often interested in modeling a specific instance of a problem, in machine learning markets we are necessarily modeling a {\em family} of events instead. This is the difference between running a market for this year’s Olympics, and running a market for any previous year (considering, of course, the public does not know the results of the Olympics). [TODO: explain better]
 
 	The {\tt DataSet} model includes a number of methods that use or directly wrap around these values, in order to provide consistent operation with the outside world. The key operations of this kind are the {\tt start()}, {\tt stop()}, {\tt reset()}, {\tt force\_advance()} and {\tt set\_challenge(id)} methods that control the principal state of the data-set. 
@@ -620,7 +621,7 @@ I approached the question of creating documentation in a similar manner to testi
     The main body of unit tests deals with the core market structure and does verification of the basic mechanisms underlying the markets. Example tests include starting, stopping and resetting a dataset or checking if the ``Cron`` module properly dispatches signals whenever markets expire. 
     I took a similar approach when writing the tests for the implemented market maker modules. Currently there are tests only for the {\tt msr-maker} as the other available maker - the order book - is completely neutral. 
 
-[TODO: table with unit testa and their status]
+[TODO: table with unit tests and their status]
     
 \subsection{Runtime Tests}
     
