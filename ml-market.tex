@@ -307,16 +307,50 @@ Therefore in terms of data {\tt Markets} need only define their {\em name}, {\em
 
     Similarly, while traditional prediction markets often consider a single instance of a specific problem, their application in machine learning suggests the existence of a whole family of problems. 
     
+    While in traditional prediction markets we are often interested in modeling a specific instance of a problem, in machine learning markets we are necessarily modeling a {\em family} of events instead. This is the difference between running a market for this year’s Olympics, and running a market for any previous year (considering, of course, the public does not know the results of the Olympics). [TODO: explain better]
     
 \subsection{Event}
-	Since the created markets model large (possibly joint) multivariate outcome spaces we associate each {\em Market} with the variables or {\bf Events} specific to it. 
 
-Each {\tt Event} in turn defines the possible values or {\tt Outcome}s it can take. 
+	As the created markets are to model large (possibly joint) multivariate outcome spaces, we associate each {\tt Market} with the variables or {\tt Events} specific to it. Furthermore, since the modelled events should take on discrete values, we in turn associate each {\tt Event} with the possible {\tt Outcomes} it can take on. 
 
-    
+	This means that similarly to markets, events are pretty compact in terms of their fields; in fact each event defines only its {\em name}, {\em description}, and the {\em market instance} to which it is specific.
 
-    While in traditional prediction markets we are often interested in modeling a specific instance of a problem, in machine learning markets we are necessarily modeling a {\em family} of events instead. This is the difference between running a market for this year’s Olympics, and running a market for any previous year (considering, of course, the public does not know the results of the Olympics). [TODO: explain better]
+	In terms of functionality {\tt Events} provide a number of helper methods used throughout the project, such as the ability to pick a random outcome from their event space (used in the generation of synthetic data-sets) or to present their outcomes in the form of a dictionary. 
+	
+	Events also define a few methods which return json data consumed by JavaScript on the front-end. The most important of these is the {\tt json\_prices} function which is used in the {\it price estimation} algorithms on the user side. The other two such methods (namely {\tt price\_histogram} and {\tt activity\_histogram} provide up-to-date historical data on (respectively) the prices and the activity of a market at different time-scales. Although fully implemented and working, these two functions are not presently used anywhere in the software. 
 
+\subsection{Outcome}
+
+	As established in the previous subsection {\tt Outcomes} represent the possible values that a variable (i.e. an {\tt Event}) can take on. Each {\tt Outcome} is thus characterised by its basic {\it name}, {\it description}, and the {\it event instance} of which it is part. 
+
+	In the context of a running market each type of share (and thus each {\tt Outcome}) needs to be additionally associated with a number of price indicators. These include the instantenous price (the price of the last successful offer) but also the current bid and ask offers. While some or all of these values can be non-existent or ill-defined depending on the state of the underlying market maker (for consider {\em order book} and {\em parimutuel betting} respectively) they should be still considered fundamental to the {\tt Outcome} model. Else, every time a user requested the value of a price indicator for one or more events, the market maker would need to recalculate it, and that makes for extremely poor scalability. 
+
+	{\tt Outcomes} define only two helper methods: the first one retrieves the {\tt MarketBalance} instance associated with the {\tt Outcome} while the second one defines the tooltip to be used for the front-end. 
+
+\subsection{DataSet}
+
+	The {\tt DataSet} model represents a collection of observations (also challenges, data) available in the context of a given market. In addition to being associated, via a foreign key relation, to a single {\it market instance}, a {\tt DataSet} also defines its fundamental {\it name} and {\it description} similarly to previous models. In addition to this, data-sets also specify their intended use (i.e. as a {\it training} or a {\it test} set) and a number of variables that establish and manage the state of the data-set, and thus the market.
+	
+	While intuitively the functionality dealing with the market state could be more conveniently implemented in the {\tt Market} model itself, I was reluctant to do so for two major reasons. The first one was my failure to define a nullable field of type {\tt Event} in the {\tt Market} model using the provided database constructs (note this is not the same as the foreign key or one-to-one relationships available in Django). The second was my hesitation to complicate the market design by introducing unnecessary relations between the different models. [TODO: 1 sent]
+
+	The three fields that completely fix the current state of a data-set are:
+\begin{itemize}
+
+\item {\tt DataSet.is\_active}
+
+	This field determines whether the data-set is the currently active set for its market. Note that only a maximum of one set can be active for any market at any time. This constraint is one of the few class invariants that can be conveniently checked using runtime tests. 
+
+\item {\tt DataSet.challenge\_start}
+
+	For active data-sets this field points to the {\tt DateTime} at which the data-set's current challenge was started. If a data-set is inactive the value of this field is undefined. 
+
+\item {\tt DataSet.reveal\_interval}
+
+	Specifies the total duration in days of each individual challenge, or alternatively the time between consecutive revelations. 
+
+\end{itemize}
+
+Using the various methods that use and wrap around those fields it is easy for [TODO]
 
 \begin{figure}
 \caption{A class diagram of the models comprising the market core. }
@@ -386,14 +420,20 @@ $$C(e)=b*log(\sum_{o \in \omega} {e^{pos(o)}})$$
 
 	Figure \ref{fig:admin-index} displays the index page of the administration zone, accessible through the {\tt /admin/} URL. Its final look is largely the same as the original template used with every Django distribution, except for the changed title. This is to say that although it offers full functionality and looks fairly elaborate, the admin interface does not include any functionality which exceeds the capabilities of the framework. 
 
-	As visible in Figure \ref{fig:admin-index}, the admin interface is structured in sections corresponding to the individual {\it models} accessible from it. Within code this is achieved by introducing special classes that derive from the base {\tt AdminForm} prototype, and are linked to each of the said models. Each class in turn specifies the fields and operations that can be accessed or modified by administrators, and allows the handling of particular events of interest related to the admin interface. As a Django convention all such objects must be declared in the {\tt admin.py} file within the {\tt markets} project. 
+	As visible in Figure \ref{fig:admin-index}, the admin interface is structured in sections corresponding to the individual {\it models} accessible from it. Inside the code this is achieved by introducing special classes that derive from the base {\tt ModelAdmin} prototype and are linked to each of the said models. Each class in turn specifies the fields and operations that can be accessed, modified or listed by administrators, and allows the handling of particular events of interest related to the admin interface. As a Django convention all such objects must be declared in the {\tt admin.py} file within the {\tt markets} project. 
 
-	The main functionality that the admin interface provides is the creation, modification and deletion (i.e. CRUD operations) of {\it markets}, {\it events} and {\it data-sets}. As shown in Figure \ref{fig:class-diagram} though, the last two of these models are in turn comprised of other objects, i.e. events with their possible {\it outcomes} and data-sets with the underlying {\it data} and the {\it results} of each datum. 
+	The main functionality that the admin interface provides is the creation, modification and deletion (i.e. CRUD operations) of {\it markets}, {\it events} and {\it data-sets}. As can be seen in the market class diagram (Figure \ref{fig:class-diagram}) though, the last two of these models are in turn comprised of other objects, i.e. events with their possible {\it outcomes} and data-sets with the underlying {\it data} and the {\it results} of each datum. 
 
-\subsection{Market Admin}
+\subsection{Markets}
 
-	Even though the {\it market} model is arguably the central and most important model in the created software, it is quite uncomplicated in the functionality or the members it provides on its own (for a discussion see Section \ref{sub:market}).  
+	As discussed in Section \ref{sub:market}, even though the {\it market} model is the central and arguably the most important model in the software, it is quite uncomplicated in terms of its fields and the methods it implements. As a consequence, the respective {\tt MarketAdmin} class needs only support simple CRUD operations manipulating the few fields it possesses; functionality that can be implemented in a few lines using the Django framework. Figure ??? shows the admin form displayed when adding a new market.  
+	
 
+\subsection{Events}
+
+\subsection{DataSets}
+
+\subsection{Other Models}
 
 \begin{figure}
 \caption{Dataset actions}
