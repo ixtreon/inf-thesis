@@ -319,9 +319,10 @@ Each {\tt Event} in turn defines the possible values or {\tt Outcome}s it can ta
 
 
 \begin{figure}
-\noindent\makebox[\textwidth]{ \includegraphics[scale=0.7]{figures/markets_graph.png} }
 \caption{A class diagram of the models comprising the market core. }
+\noindent\makebox[\textwidth]{ \includegraphics[scale=0.7]{figures/markets_graph.png} }
 \label{fig:class-diagram}
+{Legend: This is the class diagram showing the models comprising the market core. *Maybe talk about the composition of the diagram; how the different components are connected and interact with each other*}
 \end{figure}
     
 \section{Market Makers}
@@ -377,9 +378,10 @@ $$C(e)=b*log(\sum_{o \in \omega} {e^{pos(o)}})$$
     Since the default installation of the framework comes with the built-in {\tt django-admin} module which serves this exact purpose, implementing the admin interface was considerably straightforward. Thanks to it most of the common or repetitive operations involving models (e.g. create, read, update, delete or CRUD) were purposefully easy to implement and configure. On the other hand, other less ``popular'' features, such as the option to pre-fill a dataset with randomised entries or to create both an event and its associated outcomes in one go, required carefully reading through the (often quite extensive) documentation. The admin module also provides a built-in user authentication system working on top of the existing Django user infrastructure which makes the writing of user-specific code similarly easy. 
 
 \begin{figure}
+ \caption{The index page of the administration interface. }
   \includegraphics[width=\textwidth]{figures/admin-index(c).png}
-  \caption{The index page of the administration interface. }
-  \label{fig:admin-index}
+   \label{fig:admin-index}
+{This is the index page of the administration interface. The interface allows the administrator to authenticate and authorise the current participants in the market -  groups and users. The administrator also has an access to the components comprising the ML market. The administrator can both add new entries and edit existing ones.}
 \end{figure}
 
 	Figure \ref{fig:admin-index} displays the index page of the administration zone, accessible through the {\tt /admin/} URL. Its final look is largely the same as the original template used with every Django distribution, except for the changed title. This is to say that although it offers full functionality and looks fairly elaborate, the admin interface does not include any functionality which exceeds the capabilities of the framework. 
@@ -394,42 +396,38 @@ $$C(e)=b*log(\sum_{o \in \omega} {e^{pos(o)}})$$
 
 
 \begin{figure}
+\caption{Dataset actions}
+ \includegraphics[width=\textwidth]{figures/admin-dataset-actions(c).png}
 
-\begin{subfigure}{1\textwidth}
-
-  \includegraphics[width=1.1\linewidth]{figures/admin-dataset-actions(c).png}
-  \caption{dataset actions}
-  \label{fig:sub2}
-\end{subfigure}
-\caption{admin interface}
-\label{fig:test}
+\label{fig:dataset-actions}
+{add legend here}
 \end{figure}
 
 \begin{figure}
+\caption{market actions}
 
 \begin{subfigure}{1\textwidth}
 
   \includegraphics[width=1.1\linewidth]{figures/admin-dataset-add(c).png}
   \caption{add dataset}
-  \label{fig:sub1}
+   \label{fig:add-dataset}
 \end{subfigure}%
 
 \begin{subfigure}{1\textwidth}
 
   \includegraphics[width=1.1\linewidth]{figures/admin-event-add(c).png}
   \caption{add event}
-  \label{fig:sub2}
+  \label{fig:add-event}
 \end{subfigure}
 
 \begin{subfigure}{1\textwidth}
 
   \includegraphics[width=1.1\linewidth]{figures/admin-market-add(1).png}
   \caption{add market}
-  \label{fig:sub3}
+  \label{fig:add-market}
 \end{subfigure}
-
-\caption{market actions}
-\label{fig:test}
+\label{fig:market-actions}
+{add legend here}
 \end{figure}
 
 
@@ -439,38 +437,42 @@ $$C(e)=b*log(\sum_{o \in \omega} {e^{pos(o)}})$$
 % mention the static interface, js graphics !!
 
 \begin{figure}
+\caption{User login and index}
 
 \begin{subfigure}{.5\textwidth}
 
   \includegraphics[width=.95\linewidth]{figures/ui-user-login(c).png}
   \caption{user login}
-  \label{fig:sub1}
+  \label{fig:ui-user-login}
 \end{subfigure}%
 \begin{subfigure}{.6\textwidth}
 
   \includegraphics[width=1\linewidth]{figures/ui-index(1).png}
   \caption{index}
-  \label{fig:sub2}
+  \label{fig:ui-index}
 \end{subfigure}
-\caption{User login and index}
-\label{fig:test}
+\label{fig:ui-login-index}
+{add legend here}
 \end{figure}
 
 \begin{figure}
+\caption{Market list and market index}
 
-\begin{subfigure}{.6\textwidth}
+\begin{subfigure}{1\textwidth}
 
   \includegraphics[width=1\linewidth]{figures/ui-market-list(c).png}
   \caption{market list}
-  \label{fig:sub1}
+  \label{fig:ui-market-list}
 \end{subfigure}%
-\begin{subfigure}{.6\textwidth}
-\includegraphics[width=.9\linewidth]{figures/ui-market-index(c).png}
+
+\begin{subfigure}{0.6\textwidth}
+\includegraphics[width=1\linewidth]{figures/ui-market-index(c).png}
   \caption{market index}
   \label{fig:ui_market_index}
 \end{subfigure}
-\caption{Market list and market index}
-\label{fig:test}
+\label{fig:market-list-index}
+
+{add figure legend here}
 \end{figure}
 
 
