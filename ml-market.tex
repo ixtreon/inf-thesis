@@ -66,7 +66,6 @@ The problem of efficiently combining information coming from different sources i
 
     Prediction markets are a special kind of markets which allow agents to trade on and share their information on future events with the public. This is achieved by creating a market where the trading goods are akin to shares corresponding to each of the possible outcomes of the events of interest. Each share promises a fixed payment in the future to its holder if and only if the outcome associated with it happens to be the event's actual result. This future point is usually fixed at the start of each challenge, necessarily after the result of the event has been observed by the public. In such a way players are incentivised to trade on the difference between their beliefs and those of the market: rational agents would buy shares at what they perceive to be a lower price as this increases their expected profit. In practice by doing so they affect the instantaneous price of each of the goods and thus inform the market and the public of their knowledge. 
 
-	
 [TODO: application -> machine learning]
 
     Another possible application of prediction markets deals with the creation of crowdsourced machine learning competitions. Such challenges have become increasingly popular thanks in large to the fact that they leverage the expertise and knowledge of the public at scale. A prominent example is the {\em Netflix Prize} challenge which was held as early as 2006 with the goal of improving the movie classification algorithms used by the company of the same name \cite{bennett_netflix_2007}. The contest ended 3 years later with success, the winning algorithm achieving a significant improvement of over 10\% increase in the RMSE metric in comparison to the original solution \cite{koren_bellkor_2009}. The online platform {\em Kaggle} which appeared shortly afterwards takes a slightly different approach by instead hosting such crowdsourced machine learning competitions on the behalf of third parties. It has proved similarly successful, attracting an active community of data scientists from different domains and leading to improvements in the {\em state-of-the-art} algorithms used across a number of disciplines such as Biology \cite{bentzien_crowd_2013} and Physics \cite{harvey_observing_2014}. 
@@ -78,7 +77,8 @@ The problem of efficiently combining information coming from different sources i
 To this end the software offers a concise, well-tested and documented prediction market core with a modular architecture which allows for the creation and experimental comparison of different pricing algorithms. Being a web platform it has a full-featured though fairly unsophisticated human-friendly user interface, but also includes a comprehensive market API which permits and encourages algorithmic trading. 
 
 	While the original project topic: 
-   
+
+   	[TODO: add a summary paragraph]
    
    
 \chapter{Definitions}
@@ -107,9 +107,10 @@ To this end the software offers a concise, well-tested and documented prediction
     [TODO]
 
 \section{Machine Learning Market}
+\label{sec:ml-markets}
     {\bf Machine learning markets} (also {\bf artificial prediction markets}) are a fairly recent extension of the concept of prediction markets which establish parallels between prediction markets and machine learning approaches for model combination. 
 
-In a machine learning market the players are machine learning agents possessing individual {\em utility} or {\em betting} functions in addition to defining their probabilistic beliefs. As in ordinary prediction markets the traded goods correspond to the possible outcomes of the events (or variables) of interest. An important constraint is the {\em no-arbitrage} assumption which dictates that the prices of the goods corresponding to the disjoint outcomes of an event must be well-defined and equal to the goods' payout of 1 credit. The goods' prices thus form a probability distribution over the outcome space. In practice this is achieved by the use of an {\em active} market maker that determines the current price of goods by resolving arbitrage opportunities or providing liquidity to the market. 
+In a machine learning market the players are machine learning agents possessing individual {\em utility} or {\em betting} functions in addition to defining their probabilistic beliefs as usual. As in ordinary prediction markets the traded goods correspond to the possible outcomes of the events (or variables) of interest. An important constraint is the {\em no-arbitrage} assumption which dictates that the prices of the goods corresponding to the disjoint outcomes of an event must be well-defined and equal to the goods' payout of 1 credit. The goods' prices thus form a probability distribution over the outcome space. In practice this is achieved by the use of an {\em active} market maker that determines the current price of goods by resolving arbitrage opportunities or providing liquidity to the market. 
 
 	Barbu and Lay introduced the concept of an {\bf artifical prediction market} as early as 2010 \cite{barbu_supervised_2010}. The concept has been later extended and published formally in 2012 \cite{barbu_introduction_2012}. In artificial prediction markets agents act according to their beliefs and a specified {\em betting function}. An important result obtained by the authors for this kind of markets is that agents with fairly simple (e.g. linear or logarithmic) betting functions generalise existing algorithms such as random forests and logistic regression and often outperform them in practice. More importantly 
 
@@ -442,7 +443,7 @@ In this section I talk of the internal structure of the completed project. I int
 
 	In addition to the aforementioned fields, each {\tt Account} also specifies whether it is the user's primary account or not. This distinction is important in that it allows users from specific groups (trivially administrators but also configurable) to open more than one account for a market. I believe this is a useful feature for the goal of experimentally establishing various equivalences in prediction markets. 
 
-	In terms of functionality the only notable method provided by the {\tt Account} class is {\tt place_order(self, market, position)}. It first constructs a new {\tt Order} object and populates it with the given position in each of the outcomes of interest. After ensuring the created order is valid, this routine proceeds by raising the {\tt order\_placed} signal with the newly-created order as an argument. It is used exclusively for the handling incoming order requests which means it should sanitize any input it expects. To this end it relies on the {\tt Order.new(market, account, positions)} method to parse the input and construct the order in question, which in turn has strict checks on the format {\it it} provides. 
+	In terms of functionality the only notable method provided by the {\tt Account} class is {\tt place\_order(self, market, position)}. It first constructs a new {\tt Order} object and populates it with the given position in each of the outcomes of interest. After ensuring the created order is valid, this routine proceeds by raising the {\tt order\_placed} signal with the newly-created order as an argument. It is used exclusively for the handling incoming order requests which means it should sanitize any input it expects. To this end it relies on the {\tt Order.new(market, account, positions)} method to parse the input and construct the order in question, which in turn has strict checks on the format {\it it} provides. 
 
 \subsubsection{Order}
 
@@ -705,21 +706,53 @@ I approached the question of creating documentation in a similar manner to testi
 
 This chapter includes evaluation of the completed project and reflection on the possible use cases of the software. 
 
+% The original project was named ... and involved ... My analysis showed that ... may be too much and instead a frameworkish report might be better
+
 \section{Software Evaluation}
 
+	This section discusses the overall completion status 
+
+\subsection{Model Flexibility}
+% better than other guys since has many events w/ many outcomes and many datasets
+
 \subsection{Functionality}
+% supports custom market makers; existing solutions support 1 or 2 fixed makers, I take a modular approach
+
+% while its main use case is modelling prediction markets, the framework allows the creation of more general types of markets. 
 
 \subsection{Interface}
 
+% user interface as full-featured, yet uncomplicated
 
-\section{Reflection and Use Cases}
-% The original project was named ... and involved ... My analysis showed that ... may be too much and instead a frameworkish report might be better
+% stress the importance of the RESTful API in terms of the possible use cases
+
+\section{The Software as a Platform}
+
+	The most important contributions of the completed project involve its possible uses as a base for further research in prediction markets and their applications in machine learning. On a basic level the expressive power and modular design of the software allow it to model a considerable number of existing prediction market schemes with relatively little effort. Moreover, thanks to the well-defined application interface, it could also be used in order to experimentally observe the predictive performance of markets involving automated agents. Ultimately its most challenging use case deals with the creation of crowdsourced machine learning market contests. [involve many events, datasets]
 
 \subsection{Prediction Markets}
 
+	The simplest use case of the software deals with the creation of ordinary prediction markets. In practice such markets are rarely defined over more than a few events or outcomes, and for most cases do not require the existence of distinct data-sets of observations. For example consider the binary market where players bet on the probability of a large cellestial body colliding with the planet Earth by the start of 2025 (of course, we would then have to be explicit about or definition of {\it large}). 
+
+	Thanks to its modelling power, the final software is able to intuitively express such markets. A perceived problem with regard to this use case is the fact that markets in my project must necessarily include a data-set of collected observations. They are thus not particularly suited to modelling markets in which the results of the events are {\it actually unknown}. On the other hand the software could be easily modified in a way which supports such functionality. A quick solution could involve the creation of a dataset with a single challenge of negative duration. Once started such a challenge would not expire unless forced to using the provided admin interface. Thus when the result of such a market becomes known at a future point of time, the market administrator can proceed by updating the recorded challenge result, and then forcing its end. 
+
+	On the other hand such kinds of prediction markets are usually intended for use by human players. This means that [TODO]
+
 \subsection{Model Aggregation}
 
-\subsection{Crowdsourced Machine Learning Contests}
+	Section \ref{sec:ml-markets} discusses the established frameworks and possible applications of prediction markets in the domain of machine learning. Key points of the research reviewed in the section include the establishing of equivalence between existing approaches to model aggregation and the prices of goods in machine learning markets. 
+
+	My project focused on creating the specific models to allow model aggr, thus emphasizing on its usability as a research tool. [TODO]
+
+	A possible limitation with regard to this use case is the fact that the current software architecture allows the expression of exclusively disjoint events. This implies that it may not be possible to experimentally verify all of the theoretical results obtained by Storkey \cite{storkey_machine_2011}, notably those relating prediction markets to existing message passing schemes. 
+
+\subsection{Machine Learning Market Contests}
+
+	As discussed in Chapter 1 the concept of using prediction markets with the goal of organising collaborative, crowdsourced machine learning competitions (or machine learning market competitions), is fairly recent. They build upon the basic concept of crowdsourced machine learning contests by rewarding the players who improve the {\it overall} market prediction, rather than those with highest {\tt individual} performance. 
+
+	The accomplished project could be used in a fairly straightforward manner in the organisation of such contests. For example it provides the infrastructure for dealing with data-sets, which can be easily imported to the database back-end with the use of simple Python scripts. Moreover, the RESTful API present in the software should provide most, if not all, of the functionality required by the automated agents participating in this kind of machine learning contests. 
+
+	Possible obstacles to the successful application of the created software in the context of machine learning market contests are largely similar to those discussed in the previous two subsections. Most notably these include the inability of the current architecture to model events of joint information, and the use of a fairly simplistic user interface. 
 
 \chapter{Conclusion}
 % prediction markets and how they can be improved to do even better job
