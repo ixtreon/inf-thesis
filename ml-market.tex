@@ -234,7 +234,7 @@ On the other hand UI is one of the actually {\em lesser} goals in terms of proje
 
 \chapter{Implementation}
 
-    This chapter details the design decisions taken while building the project. I first talk briefly about the technologies I decided to use and why I started from scratch instead of extending an existing one. I then continue by examining existing software stacks in terms of how suitable the language and libraries are for the task at hand. Finally I outline the major architectural components of the completed project and the ways they interact with each other.
+    This chapter details the design decisions taken while building the project. I first talk briefly about the technologies I decided to use and why I started from scratch instead of extending an existing project. I then continue by examining available= software stacks in terms of how suitable the language and libraries are for the task at hand. Finally I outline the major architectural components of the completed project and the ways they interact with each other.
 
 \section{Design}
 
@@ -251,7 +251,7 @@ On the other hand the dynamic nature of Python can quickly become a burden when 
 
 \item Java
 
-While it is a popular choice for commercial software thanks to its wide platform support and interoperability, writing web applications in Java has its drawbacks in comparison to other languages better suited to the task. Since Java is a static, compiled language it is easier to verify certain aspects of a program's correctness as compared to dynamic languages, but that comes at the cost of not being able to immediately observe the effects of code changes as is possible with their dynamic counterparts. In addition my personal opinion is that solutions in Java tend to become larger on average than solutions in other platforms.
+While it is a popular choice for commercial software thanks to its wide platform support and interoperability, writing web applications in Java has its drawbacks in comparison to other languages better suited to the task. Since Java is a static, compiled language it is easier to verify certain aspects of a program's correctness as compared to dynamic languages, but that comes at the cost of not being able to immediately observe the effects of code changes which is possible when using dynamic languages. In addition my personal opinion is that solutions in Java tend to become, on average, heavier than solutions in other platforms.
 
 \item .NET
 
@@ -269,6 +269,8 @@ While it is a popular choice for commercial software thanks to its wide platform
 
 \begin{table}[h]
 \centering
+\caption{A summative view of the specific environment used throughout most of the development process.}
+
 \begin{tabular}{|l|l|}
 \hline
 \textbf{Python Environment}    & CPython 3.4.2 (32-bit)           \\ \hline
@@ -276,8 +278,9 @@ While it is a popular choice for commercial software thanks to its wide platform
 \textbf{Django REST Framework} & v3.0.3                           \\ \hline
 \textbf{Sphinx Documentation Generator}                & v1.3                             \\ \hline
 \end{tabular}
-\caption{A summative view of the specific environment used throughout most of the development process. Each row contains the name of a software component used by the market framework, followed by the versions used while writing and testing it. }
 \label{tab:dev-env}
+ 
+\flushleft {Each row contains the name of a software component used by the market framework, followed by the versions used while writing and testing it. }
 \end{table}
 
 	Most of the development process was done on a personal computer running under Windows 8.1 (NT 6.3, build 9600) using Visual Studio Ultimate 2013. Table \ref{tab:dev-env} lists the versions of the additional components used by the project. Note that the version of Python that is used (3.4+) means the project may not work properly with older versions of the compiler, especially versions prior to $3.0$. [TODO?]
@@ -289,7 +292,7 @@ In this section I talk of the internal structure of the completed project. I int
 
     Models are the main building blocks of Django's object-relational model. Written as Python classes, they are used by the framework to recognise and automatically apply changes to the underlying database back-end. Models represent a fairly lightweight layer over the traditional relational model used with SQL as they similarly require a flat table structure and the explicit specification of multiplicity and key constraints. 
 
-	Nonetheless, I found Django’s model achieves its purpose of eliminating code duplication and SQL overhead in a fairly elegant (or {\em pythonic}) way. Although its powerful, if at times involved, database query and update capabilities took me some time to fully grasp, I found they greatly simplified everyday tasks dealing with the database back-end. For instance, accessing objects related via a {\it one-to-one} or a {\it foreign key} relationship is mostly transparent from user perspective since it could be done in the same manner as accessing a field of the object (in the case of {\it foreign key} constraints the field is respectively a list). 
+	Nonetheless, I found Django's model achieves its purpose of eliminating code duplication and SQL overhead in a fairly elegant (or {\em pythonic}) way. Although its powerful, if at times involved, database query and update capabilities took me some time to fully grasp, I found the aforementioned features greatly simplified everyday tasks dealing with the database back-end. For instance, accessing objects related via a {\it one-to-one} or a {\it foreign key} relationship is mostly transparent from user perspective since it could be done in the same manner as accessing a field of the object (in the case of {\it foreign key} constraints the field is respectively a list). 
 
 \subsection{Cron}
 
@@ -315,17 +318,16 @@ In this section I talk of the internal structure of the completed project. I int
 
     At the core of the software stands the {\tt Market} model which is the basic representation of a prediction market. As part of its fundamental responsibilities each {\tt Market} keeps a list of the participating players, processes incoming orders, and ultimately resolves shares to rewards at the end of a challenge. Note that due to the specifics of the ORM used by Django this class does not contain or define much of the underlying market structure by itself, but instead acts as a foreign key to other models. 
 
-	This design decision stems mainly from the fact that the created markets must be unconstrained in a number of dimensions. For example if we modelled binary markets alone, we could specify the details for their sole event, its two outcomes and their prices. Multivariate markets on the other hand need be flexible in any of those features and may involve an unlimited number of events and outcomes. Similarly, while traditional prediction markets often consider a single instance of a specific problem, their application in machine learning suggests the existence of a class or a family of such problems as part of a larger {\em data-sets}. Intuitively we are not as interested in determining whether a {\em particular} picture contains a face unless we can generalise this to a number of {\em similar} images in the context of the data-set. 
+	This design decision stems mainly from the fact that the created markets must be unconstrained in a number of dimensions. For example if we modelled binary markets alone, we could specify the details for their sole event, its two outcomes and their prices. Multivariate markets on the other hand need to be flexible in any of those features and may involve an unlimited number of events and outcomes. Similarly, while traditional prediction markets often consider a single instance of a specific problem, their application in machine learning suggests the existence of a class or a family of such problems as part of a larger {\em data sets}. Intuitively we are not as interested in determining whether a {\em particular} picture contains a face unless we can generalise this to a number of {\em similar} images in the context of the data set. 
 
 	Therefore in terms of data {\tt Markets} need only define their {\em name}, {\em description}, {\em publication\_date}, and most importantly the kind of {\tt MarketMaker} used for establishing prices, handling incoming orders, and finalising challenges in the created market. Note that while the {\it name} of a market is supposed to be concise and short, its {\it description} can be significantly larger and is rendered in HTML templates using the {\tt safe} flag. The use of the said flag allows market administrators to include HTML code, such as figures and tables, within a market's description and is in fact used by all models defining a similar {\it description} field. 
 
 	{\tt Markets} also provide a number of common accessor methods used both throughout HTML templates and other parts of the code. For example, while a {\tt Market} does not directly contain or define its {\tt DataSet} or {\tt Datum}, it nonetheless provides methods which access fields or perform operations of interest in them. In addition this makes it particularly easy to introduce post- and pre-conditions for such operations. These are introduced in detail in Section 5.6.2. 
     
-    From a design standpoint it does not define much of the underlying market structure by itself, but instead acts as a foreign key to other models. This is necessary as part of the particular ORM requirements, but mainly stems from the fact that we try to place as few constraints on the created markets as possible. For example while a market of a single binary event could contain the event, its two outcomes and their prices, multivariate markets need be flexible in any of those dimensions. 
+    From a design standpoint it [what does 'it' refer to?] does not define much of the underlying market structure by itself, but instead acts as a foreign key to other models. This is necessary as part of the particular ORM requirements, but mainly stems from the fact that we try to place as few constraints on the created markets as possible. For example while a market of a single binary event contains only the event, its two outcomes and their prices, multivariate markets need be extendable in any of those dimensions. 
 
-    Similarly, while traditional prediction markets often consider a single instance of a specific problem, their application in machine learning suggests the existence of a whole family of problems. 
-    
-    While in traditional prediction markets we are often interested in modeling a specific instance of a problem, in machine learning markets we are necessarily modeling a {\em family} of events instead. This is the difference between running a market for this year’s Olympics, and running a market for any previous year (considering, of course, the public does not know the results of the Olympics). [TODO: explain better]
+       
+    While in traditional prediction markets we are often interested in modeling a specific instance of a problem, in machine learning markets we are necessarily modeling a {\em family} of events instead. This is the difference between running a market for this year’s Olympics, and running a market for any previous year (considering, of course, the public does not know the results of the Olympics). [TODO: explain better] (repeating again in DataSets)
 
 \subsubsection{MarketBalance}
 
@@ -339,7 +341,7 @@ In this section I talk of the internal structure of the completed project. I int
 
 	In terms of functionality {\tt Events} provide a number of helper methods used throughout the project, such as the ability to pick a random outcome from their event space (used in the generation of synthetic data-sets) or to present their outcomes in the form of a dictionary. 
 	
-	Events also define a few methods which return json data consumed by JavaScript on the front-end. The most important of these is the {\tt json\_prices} function which is used in the {\it price estimation} algorithms on the user side. The other two such methods (namely {\tt price\_histogram} and {\tt activity\_histogram} provide up-to-date historical data on (respectively) the prices and the activity of a market at different time-scales. Although fully implemented and working, these two functions are not presently used anywhere in the software. 
+	Events also define a few methods which return json data consumed by JavaScript on the front-end. The most important of these is the {\tt json\_prices} function which is used in the {\it price estimation} algorithms on the user side. The other two such methods (namely {\tt price\_histogram} and {\tt activity\_histogram} provide up-to-date historical data on (respectively) the prices and the activity of a market at different time-scales. Although fully implemented and working, these two functions are not currently used in the software. 
 
 \subsubsection{Outcome}
 	[TODO: reflect the fact it is a subsubection]
@@ -375,7 +377,7 @@ In this section I talk of the internal structure of the completed project. I int
 
 	The {\tt DataSet} model includes a number of methods that use or directly wrap around these values, in order to provide consistent operation with the outside world. The key operations of this kind are the {\tt start()}, {\tt stop()}, {\tt reset()}, {\tt force\_advance()} and {\tt set\_challenge(id)} methods that control the principal state of the data-set. 
 
-	Another important routine is the {\tt challenge\_end()} method which specifies the expiration date and time of the current challenge. This is also the time at which the {\tt Cron} module (described in detail in Section \ref{sec:cron})
+	Another important routine is the {\tt challenge\_end()} method which specifies the expiration date and time of the current challenge. This is also the time at which the {\tt Cron} module (described in detail in Section 5.2.1)
 
 	Naturally editing an active 
 	In addition to managing its present state {\tt DataSet} also raises 
@@ -404,26 +406,26 @@ In this section I talk of the internal structure of the completed project. I int
 
 The fundamental responsibilites of each {\em Market Maker} consist of the processing of incoming orders and the elicitation of current prices for the traded goods. Depending on its type, a {\em Market Maker} may also provide price quotes for orders instead of instantly processing them. 
 
-Moreover, observe that the current prices need to change only in the event a new challenge is started, or an order is processed. In terms of code this means that we can easily create, hook to, and raise these two events (or {\it signals} in Django) as appropriate.   and in turn inform the underlying market maker and cause it to update the market state.  
+Moreover, the {\em Market Maker} observes whether the current prices need to change only if a new challenge is started, or an order is processed. In terms of code this means that we can easily create, hook to, and raise these two events (or {\it signals} in Django) as appropriate.   and in turn inform the underlying market maker and cause it to update the market state.  
 
 Since the basic premise of the framework is the modelling of prediction markets we can assume that the process of resolving shares to rewards is the same across different market makers. In particular this involves rewarding (or punishing) agents with an active position in the {\it true} outcome with 1 credit for each share they own (or respectively owe). This common functionality is implemented as part of the base {\tt MarketMaker} class using the existing models. 
 
-	 Note that Python does not support interfaces or abstract classes which is the typical way of defining class responsibilities or protocols in object-oriented languages. This means that required methods are instead declared using ordinary functions which throw exceptions, unless overrided in derived classes. Even though the end result is virtually the same, this also means that market makers are allowed to override {\it already implemented} methods, such as the one handling the end of a challenge. In practice this means the created market makers need not follow the conventions established by prediction markets, as is the case with {\it parimutuel} markets. 
+	 Note that Python does not support interfaces or abstract classes which is the typical way of defining class responsibilities or protocols in object-oriented languages. This means that required methods are instead declared using ordinary functions which throw exceptions, unless overrided in derived classes. Even though the end result is virtually the same, this approach to declaring required methods also means that market makers are allowed to override {\it already implemented} methods, such as the one handling the end of a challenge. In practice this means the created market makers need not follow the conventions established by prediction markets, as is the case with {\it parimutuel} markets. 
 
 
 \subsection{Order Book}
     
-    The “city plaza” market scenario where potential buyers and sellers place their offers and the matching ones are resolved. There is normally more than one way to complete trades where for example an agent sells at a price lower than that of a matching buyer, or an agent wishes to buy a larger quantity than a seller has to offer. Usually the market maker is neutral towards both the goods and their prices, but can also be made active by e.g. resolving arbitrage opportunities in his favour.
+    The “city plaza” market scenario where potential buyers and sellers place their offers and the matching ones are resolved [descibes the concept of an {\em Order Book} market maker]. There is normally more than one way to complete trades where for example an agent sells at a price lower than that of a matching buyer, or an agent wishes to buy a larger quantity than a seller has to offer. Usually the market maker is neutral towards both the goods and their prices, but can also be made active by e.g. resolving arbitrage opportunities in his favour.
 
     Although they are simple to implement and operate, auctions of this type tend to create thin markets with volatile prices and low liquidity of the assets being traded. We can furthermore use the concept of Nash Equilibria to show that such markets do not incentivise players to share their true beliefs and are thus not well suited for model estimation (Myerson et al. 1983). Consider for example a buyer who values a given good well above its current market price: he or she would have no incentive whatsoever to let others (“the market”) know about their high valuation of the good but will instead seek to make trades at the lower price.
 
-	Although listed first and arguably the simplest, {\bf Order Book} makers were implemented after the completion of the {\em Log-MSR} market maker. Particularly, since such markets are strictly neutral towards the traded goods and thus less flexible than other types of market makers, I decided they would not fully [exploit the capabilities of the framework]. 
+	Although listed first and arguably the simplest, {\bf Order Book} makers were implemented after the completion of the {\em Log-MSR} market maker. Particularly, since such market makers are strictly neutral towards the traded goods and thus less flexible than other types of market makers, I decided they would not [fully explore and illustrate the capabilities of the framework] fully exploit the capabilities of the framework]. 
 
     
 \subsection{Parimutuel Betting}
-This is the system usually used in gambling on sporting events, or in various lotteries. In it all bets of a type are put together in a pool, and the instantaneous odds are determined by the ratios between the already placed bets. The final winnings are determined by sharing the pool (minus any house cuts) amongst the winning bets. Even though they are easy to implement and operate, such markets do not offer any guarantees on the amount that is won in case of success (i.e. the final odds) since the latter is not known until all bets are collected.
+Parimutuel Betting is the system usually used in gambling on sporting events, or in various lotteries. In it all bets of a type are put together in a pool, and the instantaneous odds are determined by the ratios between the already placed bets. The final winnings are determined by sharing the pool (minus any house cuts) amongst the winning bets.
 
-{\em Parimutuel} markets are a prime example for such markets since they do not involve the concept of {\it shares} at all. Instead, the market maker keeps track of the total amount of {\it credits} spent by each agent, and the total amount of money in the pool. At the end of a challenge the players with an active position in the winning outcome receive a reward from the prize pool proportional to their stake in the said outcome. 
+{\em Parimutuel} markets are a prime example for such markets since they do not involve the concept of {\it shares} at all. Instead, the market maker keeps track of the total amount of {\it credits} spent by each agent, and the total amount of money in the pool. At the end of a challenge the players with an active position in the winning outcome receive a reward from the prize pool proportional to their stake in the said outcome.  Even though markets based on perimutuel bets are easy to implement and operate, a major drawback is that they do not offer any guarantees on the amount that is won in case of success (i.e. the final odds) since the latter is not known until all bets are collected. 
 
 This is the only one of the three market makers which was not written in code. 
 [TODO: Move to Future Work along with another type of market which could be implemented]
@@ -445,7 +447,7 @@ $$C(e)=b*log(\sum_{o \in \omega} {e^{pos(o)}})$$
 \section{Admin Interface}
 
 
-    The admin interface is the place where the market operator or owner can create and configure the hosted markets and manage their state and contents in terms of events and data sets.
+    The admin interface is the place where the market operator or owner can create and configure the hosted markets and manage their state and contents in terms of events and data-sets.
 
     Since the default installation of the framework comes with the built-in {\tt django-admin} module which serves this exact purpose, implementing the admin interface was considerably straightforward. Thanks to it most of the common or repetitive operations involving models (e.g. create, read, update, delete or CRUD) were purposefully easy to implement and configure. On the other hand, other less ``popular'' features, such as the option to pre-fill a dataset with randomised entries or to create both an event and its associated outcomes in one go, required carefully reading through the (often quite extensive) documentation. The admin module also provides a built-in user authentication system working on top of the existing Django user infrastructure which makes the writing of user-specific code similarly easy. 
 
@@ -472,7 +474,7 @@ $$C(e)=b*log(\sum_{o \in \omega} {e^{pos(o)}})$$
  \includegraphics[width=\textwidth]{figures/admin-dataset-actions(c).png}
 
 \label{fig:dataset-actions}
-{This figure shows the {\it Data sets} menu accessible from the {\it Home} page of the {\it ml-markets administration}. The administrator can delete, reset, star or stop selected datasets. In addition, the administrator can also add new datasets, without the need to go back to the  {\it Home} page. The {\it Data sets} menu also provides brief desciption regarding the contents of the dataset, whether there is an active challenge involving the dataset in question and its {\it id}. The {\it Data sets} menu also shows when a next challenge is due to start, the starting date and time of the last challenge and the datum count in the data set.} 
+{This figure shows the {\it Data-sets} menu accessible from the {\it Home} page of the {\it ml-markets administration}. The administrator can delete, reset, star or stop selected datasets. In addition, the administrator can also add new datasets, without the need to go back to the  {\it Home} page. The {\it Data sets} menu also provides brief desciption regarding the contents of the dataset, whether there is an active challenge involving the dataset in question and its {\it id}. The {\it Data sets} menu also shows when a next challenge is due to start, the starting date and time of the last challenge and the datum count in the data set.} 
 \end{figure}
 
 \begin{figure}
