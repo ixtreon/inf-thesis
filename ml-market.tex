@@ -314,8 +314,39 @@ Specific Environments \\
 \flushleft {Each row contains the name of a software component used by the market framework, followed by the versions used while writing and testing it. }
 \end{table}
 
-	Most of the development process was done on a personal computer running under Windows 8.1 (NT 6.3, build 9600) using Visual Studio Ultimate 2013. Table \ref{tab:dev-env} lists the versions of the additional components used by the project. Note that the version of Python that is used (3.4+) means the project may not work properly with older versions of the compiler, especially versions prior to $3.0$. [TODO?]
+	Most of the development process was done on a personal computer running under Windows 8.1 (NT 6.3, build 9600) using Visual Studio Ultimate 2013. Table \ref{tab:dev-env} lists the versions of the additional components used by the project. Note that the version of Python that is used (3.4+) means the project may not work properly with older versions of the compiler. 
 
+\section{Signals}
+
+	The chosen market structure dictates the need of separation between the market core and makers. While completely independent, these components should be able to communicate effectively in response to various market events. This suggests the use of the {\em Observer} design pattern which is a practical solution to the problem of notifying the list of subscribers to an event of its occurrence. Luckily, Django provides a built-in {\tt signal} class which implements the said functionality. The two most important operations it implements are the {\tt connect(self, receiver)} and {\tt send(self)} methods which respectively subscribe to and raise the event (or signal) in question. 
+
+	With this in mind I saw the need to define the following three events:
+\begin{itemize}
+\item {\tt order\_placed}
+	This is the most commonly seen of the three signals and is raised whenever an agent places a new order. It is raised exclusively by the {\tt place\_order(self, market, position)} method declared within the {\tt Account} class. When the signal is activated, the underlying order is passed to the active market maker for processing. 
+
+\item {\tt dataset\_changed}
+	This is the signal raised whenever any of the fields of a data-set change. Its only subscriber is the {\tt Cron} class which checks whether the signal source (i.e. the data-set) changed its state, or expiration date. If that is the case the active {\tt Cron} object properly re-tracks the data-set. 
+
+	This signal is raised exclusively in the custom {\tt save(self, *args, **kwargs)} method overload defined in the class {\tt DataSet}. 
+
+\item {\tt dataset\_expired}
+
+	This signal is raised whenever an active challenge expires and needs finalisation. Its only sender is the {\tt next()} function in the {\tt DataSet} class. When the signal is raised, the expired challenge is passed to the market maker who must then reward or penalise the participating agents. 
+
+\end{itemize}
+
+\section{Cron}
+
+	Of special importance to the proper functioning of the created markets is the {\tt Cron} class. It is the sole component which ensures all markets are in a consistent state with regard to the current time and is thus central to the markets' continued operation. 
+
+	In order to achieve these goals, a single {\tt Cron} instance is launched at market startup. At this point it checks whether any of the previously active markets has finished while the server was offline. If so, the challenge is finalised and, unless that was the last challenge, the data-set is advanced to the next one. The last operation is performed as long as there are remaining challenges whose expiration date lies in the past. 
+
+	After it advances a data-set to its most current challenge, the {\tt Cron} instance proceeds by once more checking whether the data-set is active (i.e. its final challenge is still not completed). If that is the case the {\tt Cron} object schedules the same update mechanism for execution a second after the real expiration of the challenge, thus ensuring that the challenge is going to be finalised in a timely manner. 
+	
+	While performing these steps the Cron object uses existing methods within the corresponding {\tt DataSet} class, and consequently raises the {\tt dataset\_expired} signal if necessary. Additionally each Cron instance connects to the {\tt dataset\_changed} event and makes sure it always tracks the actual version of the data-set. 
+
+	Before implementing this class I considered a number of solutions to the problem of scheduling tasks. I did not want to use OS-specifc colutions, such as the actual {\tt cron} tool for understandable reasons, but I was also hesitant to use third-party Python modules. After all the base library for Python provided the {\tt sched} class which sounded well-suited to the task. After experimenting with it for some time though, I found out that the functionality it provided was fairly limited, and its ultimate use in the context of the software would demand the creation of an entire mini-package dedicated to that task. Ulltimately I implemented this class using another built-in django class, the {\tt Timer}. 
 
 \section{Model Structure}
 
@@ -325,24 +356,13 @@ In this section I talk of the internal structure of the completed project. I int
 
 	Nonetheless, I found Django's model achieves its purpose of eliminating code duplication and SQL overhead in a fairly elegant (or {\em pythonic}) way. Although its powerful, if at times involved, database query and update capabilities took me some time to fully grasp, I found the aforementioned features greatly simplified everyday tasks dealing with the database back-end. For instance, accessing objects related via a {\it one-to-one} or a {\it foreign key} relationship is mostly transparent from user perspective since it could be done in the same manner as accessing a field of the object (in the case of {\it foreign key} constraints the field is respectively a list). 
 
-\subsection{Cron}
-
-	Of special importance to the proper functioning of the created markets is the {\tt Cron} class. Although not a model {\it per se}, it is the component which ensures all markets are in a state consistent with regard to the current time and is thus central to the markets' continued operation. 
-
-	In order to achieve these operational goals, a single {\tt Cron} instance is launched at market startup. At this point it checks whether any of the previously active markets has finished while the server was offline. If so, the challenge is finalised and, unless that was the last challenge, the data-set is advanced to the next one. The last operation is performed as long as there are remaining challenges whose expiration date lies in the past. 
-
-	After it advances a data-set to its most current challenge, the {\tt Cron} instance proceeds by once more checking whether the data-set is active (i.e. its final challenge is still not completed). If that is the case the {\tt Cron} schedules the same update mechanism for execution a second after the real expiration of the challenge, thus ensuring that the challenge is going to be finalised in a timely manner. 
-
-	[TODO: relation to events/signals]
-	
-	[TODO: implementation, backgound threads]
-
 \begin{figure}
 \caption{A class diagram of the models comprising the market core. }
 \noindent\makebox[\textwidth]{ \includegraphics[scale=0.7]{figures/markets_graph.png} }
 \label{fig:class-diagram}
 {Legend: This is the class diagram showing the models comprising the market core. *Maybe talk about the composition of the diagram; how the different components are connected and interact with each other*}
 \end{figure}
+
 
 \subsection{Market}
 \label{sub:market}
@@ -359,10 +379,6 @@ In this section I talk of the internal structure of the completed project. I int
 
        
     While in traditional prediction markets we are often interested in modeling a specific instance of a problem, in machine learning markets we are necessarily modeling a {\em family} of events instead. This is the difference between running a market for this year’s Olympics, and running a market for any previous year (considering, of course, the public does not know the results of the Olympics). [TODO: explain better] (repeating again in DataSets)
-
-\subsubsection{MarketBalance}
-
-	[TODOOOO]
     
 \subsection{Event}
 
@@ -401,32 +417,45 @@ In this section I talk of the internal structure of the completed project. I int
 
 \item {\tt DataSet.reveal\_interval}
 
-	Specifies the total duration of each individual challenge, in days. 
+	Specifies the total duration of each individual challenge in days. 
 
 \end{itemize}
-    While in traditional prediction markets we are often interested in modeling a specific instance of a problem, in machine learning markets we are necessarily modeling a {\em family} of events instead. This is the difference between running a market for this year’s Olympics, and running a market for any previous year (considering, of course, the public does not know the results of the Olympics). [TODO: explain better]
 
-	The {\tt DataSet} model includes a number of methods that use or directly wrap around these values, in order to provide consistent operation with the outside world. The key operations of this kind are the {\tt start()}, {\tt stop()}, {\tt reset()}, {\tt force\_advance()} and {\tt set\_challenge(id)} methods that control the principal state of the data-set. 
+	The {\tt DataSet} model includes a number of methods that use or directly wrap around these values, in order to provide consistent interface to the outside world. The key operations of this kind are the {\tt start()}, {\tt stop()}, {\tt reset()}, {\tt next()}, {\tt force\_advance()} and {\tt set\_challenge(id)} methods that control the principal state of the data-set. As these directly affect the state of the data-set, they also make sure that by doing so, the appropriate signals are sent. Another important routine is the {\tt challenge\_end()} method which specifies the expiration date and time of the current challenge and is used by the Cron module when determining whether an active data-set needs re-scheduling. 
 
-	Another important routine is the {\tt challenge\_end()} method which specifies the expiration date and time of the current challenge. This is also the time at which the {\tt Cron} module (described in detail in Section 5.2.1)
-
-	Naturally editing an active 
-	In addition to managing its present state {\tt DataSet} also raises 
+	Another notable method within this class is {\tt random(self, n\_data)}. Its purpose is to generate the specified number of randomised data points and append them to the set instance. This makes it especially useful for testing purposes. 
     
 \subsubsection{Datum}
 
-	A {\tt Datum} 
+	A {\tt Datum} represents the specific instance (i.e. data-point, challenge) in the context of a market. The main properties of   data objects are thus its specific {\em description} which provides the information about this problem instance and the {\em results} it defines for one or more of the events in its market. In addition to these, each {\tt Datum} is also associated with a particular {\it name} and a {\it set\_id}. The latter must be unique in the context of the datum's parent data-set and determines the order in which challenges are shown. 
+
+	The only function of interest implemented in this class is the {\tt random(set, name, description)} method. It generates a random datum for the given data set by assigning a random outcome to each of the events defined for the market. This routine is called by the method of the same name in the {\tt DataSet} class and is thus similarly used widely for testing purposes. 
 
 \subsubsection{Result}
 
+	The {\tt Result} model represent the {\it actual} outcome of a single event in the context of a given datum. As such they do not offer any functionality apart from simple access to their fields. 
 
 \subsection{Account}
+	The role of the {\tt Account} model is largely inspired by the related concept of a {\it bank account}. In this sense accounts simply keep track of the credits (i.e. {\it funds}) associated with each {\it user} in the context of a {\it market}. 
+
+	Note that by default agents do not have accounts for newly created markets. They must instead explicitly request one from the market owner, even though currently users are allowed to immediately open an account in any active market, and are furthermore granted a nominal amount of credits for a start. 
+
+	In addition to the aforementioned fields, each {\tt Account} also specifies whether it is the user's primary account or not. This distinction is important in that it allows users from specific groups (trivially administrators but also configurable) to open more than one account for a market. I believe this is a useful feature for the goal of experimentally establishing various equivalences in prediction markets. 
+
+	In terms of functionality the only notable method provided by the {\tt Account} class is {\tt place_order(self, market, position)}. It first constructs a new {\tt Order} object and populates it with the given position in each of the outcomes of interest. After ensuring the created order is valid, this routine proceeds by raising the {\tt order\_placed} signal with the newly-created order as an argument. It is used exclusively for the handling incoming order requests which means it should sanitize any input it expects. To this end it relies on the {\tt Order.new(market, account, positions)} method to parse the input and construct the order in question, which in turn has strict checks on the format {\it it} provides. 
 
 \subsubsection{Order}
 
+	As outlined in the section above, {\tt Orders} represent the overall position assumed by an agent in some or all of the outcomes defined for a market. 
+
+
 \subsubsection{Position}
 
-\subsubsection{AccountBalance}
+\subsection{MarketBalance}
+
+	The {\tt MarketBalance} model represents the stake (or balance) of a market maker in an outcome in its market. 
+
+\subsection{AccountBalance}
 
 
 \section{Market Makers}
@@ -472,7 +501,6 @@ $$C(e)=b*log(\sum_{o \in \omega} {e^{pos(o)}})$$
 
 	Participants are subsequently charged according to the change in risk their positions incur. In practice this means that players who move the market prediction towards the {\it true} distribution get rewarded for doing so, while those who degrade the market prediction are penalised.
 
-	
 
 
 \section{Admin Interface}
@@ -620,9 +648,10 @@ input verification: betting data, user handling; lack of challenge-id-check-when
 
 \subsubsection{Static Files}
 Talk about the static files: CSS, JavaScript
-	The static files include the style-sheets used throughout the site and the various front-end JavaScript functions I wrote as part of the user interface. 
 
-	Due to a number of concerns I adopted the common practice of separating the structure of the user-facing code from its design by the use of external style-sheets. This was done in order to emphasize the flexibility of the interface, but also to allow the use of the same style-sheets across different pages. 
+	The static files include the style-sheets used throughout the site and the various JavaScript functions written to complement the user interface. 
+
+	Although the  I adopted the common practice of separating the structure of the user-facing code from its design by the use of external style-sheets. This was done in order to emphasize the flexibility of the interface, but also to allow the use of the same style-sheets across different pages. 
 
 	
 
